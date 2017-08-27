@@ -18,34 +18,81 @@
 */
 package de.teilautos.inbox;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Properties;
+
+import javax.mail.Folder;
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Store;
+import javax.mail.internet.MimeMultipart;
+
+import de.teilautos.registration.RegistrationMailModel;
+
 public class MailClient {
 
-	protected String host = "secure.emailsrvr.com";
-	protected String username = "oliver.hock@teilautos.de";
-	protected String password = "czChrwk6!";
+	protected String host;
+	protected String username;
+	protected String password;
 
-	public String getHost() {
-		return host;
-	}
+	private Properties properties = new Properties();
+	private Store store;
+	private Folder folder;
 
-	public void setHost(String host) {
+	public MailClient(String host, String username, String password) {
 		this.host = host;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
 		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
 		this.password = password;
+		
+		properties.put("mail.pop3.host", host);
+		properties.put("mail.pop3.port", "995");
+		properties.put("mail.pop3.starttls.enable", "true");
+
+	}
+
+	public MailClient openInbox() throws MessagingException {
+		Session session = Session.getInstance(properties);
+
+		store = session.getStore("pop3s");
+		store.connect(host, username, password);
+		folder = store.getFolder("INBOX");
+		folder.open(Folder.READ_WRITE);
+		
+		return this;
+	}
+
+	public Collection<RegistrationMailModel> receiveMessages() throws MessagingException, IOException {
+		Session session = Session.getInstance(properties);
+		Store store = session.getStore("pop3s");
+		store.connect(host, username, password);
+		Folder folder = store.getFolder("INBOX");
+		folder.open(Folder.READ_WRITE);
+
+		Collection<RegistrationMailModel> registrationMailModels = new ArrayList<RegistrationMailModel>();
+		
+		Message[] messages = folder.getMessages();
+		for (Message message : messages) {
+			RegistrationMailModel model = new RegistrationMailModel(message.getSubject(),
+					(String) ((MimeMultipart) message.getContent()).getBodyPart(0).getContent());
+			registrationMailModels.add(model);
+		}
+
+		folder.close(false);
+		store.close();
+
+		return registrationMailModels;
+	}
+
+	public void sendMessage() {
+		
+	}
+	
+	public void closeInbox() throws MessagingException {
+		folder.close(false);
+		store.close();
 	}
 
 }

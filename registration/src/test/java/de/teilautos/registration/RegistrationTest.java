@@ -52,9 +52,7 @@ public class RegistrationTest {
 
 	@Test
 	public void checkInbox() {
-		VariableMap variables = Variables.createVariables().putValue("host", "secure.emailsrvr.com")
-				.putValue("username", "oliver.hock@teilautos.de").putValue("password", "czChrwk6!");
-
+		VariableMap variables = Variables.createVariables();
 		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("Process_RegistrationCheck",
 				variables);
 

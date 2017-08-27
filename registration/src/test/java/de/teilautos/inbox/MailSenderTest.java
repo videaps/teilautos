@@ -24,17 +24,18 @@ import org.junit.Test;
 
 public class MailSenderTest {
 
-	String host = "secure.emailsrvr.com";
-	String username = "oliver.hock@teilautos.de";
-	String password = "czChrwk6!";
+	String host = "pop.gmail.com";
+	String username = "teilautos.registrierung@gmail.com";
+	String password = "iX6F4kI6BvP7F0ddxnK5";
 	String to = "oliver.hock@videa.services";
 	String from = "kontakt@teilautos.de";
-	String subject = "Deine Identifizierung für Teilautos - Das regionale Carsharing";
-	String content = "Hallo und herzlich Willkommen bei Teilautos.\n\nVielen Dank, dass du dich bei uns angemeldet hast. Um deine Registrierung zu vervollständigen, folge bitte diesem Link zur Identifizierung. \n\nJetzt identifizieren mit POSTIDENT \n\nHier kannst du ganz schnell und einfach deinen Führerschein und dein Personalausweis fotografieren und hochladen. \n\nInnerhalb von nur 15 Minuten erhältst du eine Bestätigung. Im Anschluss schicken wir dir deine Zugangskarte per Post zu - was dann voraussichtlich etwas länger dauern wird. \n\nWir wünschen dir eine gute Fahrt. \n\nDein Teilautos-Team aus Beckum ";
+	String bcc = "oliver.hock@teilautos.de";
+	String subject = "Registrierung Entwicklung";
+	String content = "Teilautos Test";
 
 	@Test
 	public void test() {
-		MailSender mailSender = new MailSender(host, username, password, to, from);
+		MailSender mailSender = new MailSender(host, username, password, to, from, bcc);
 		mailSender.setSubject(subject);
 		mailSender.setContent(content);
 		mailSender.execute();

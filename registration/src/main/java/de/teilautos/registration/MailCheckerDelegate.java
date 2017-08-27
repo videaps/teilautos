@@ -18,10 +18,7 @@
 */
 package de.teilautos.registration;
 
-import java.util.ArrayList;
 import java.util.Collection;
-
-import javax.mail.Message;
 
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.Expression;
@@ -29,7 +26,7 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.teilautos.inbox.MailChecker;
+import de.teilautos.inbox.MailClient;
 
 public class MailCheckerDelegate implements JavaDelegate {
 	private final Logger logger = LoggerFactory.getLogger(MailCheckerDelegate.class);
@@ -51,27 +48,16 @@ public class MailCheckerDelegate implements JavaDelegate {
 			logger.trace("password="+"********");
 		}
 
-		Message[] messages = new MailChecker(hostValue, usernameValue, passwordValue).execute();
-		
-		Collection<RegistrationMailModel> registrationMailModels = new ArrayList<RegistrationMailModel>(); 
-		for (Message message : messages) {
-			RegistrationMailModel model = new RegistrationMailModel(message.getSubject(), (String) message.getContent());
-			registrationMailModels.add(model);
-		}
-		
+		MailClient client = new MailClient(hostValue, usernameValue, passwordValue);
+		Collection<RegistrationMailModel> registrationMailModels = client.receiveMessages();
 		execution.setVariable("registrationMailModels", registrationMailModels);
 		
 		if (logger.isTraceEnabled()) {
-			logger.trace("messages.length=" + (messages != null ? messages.length : 0));
+			logger.trace("messages.length=" + (registrationMailModels != null ? registrationMailModels.size() : 0));
 			
-			System.out.println("messages.length=" + (messages != null ? messages.length : 0));
-			
-			for (Message message : messages) {
+			for (RegistrationMailModel message : registrationMailModels) {
 				logger.trace("subject=" + message.getSubject());
 				logger.trace("content=" + message.getContent());
-				
-				System.out.println("subject=" + message.getSubject());
-				System.out.println("content=" + message.getContent());
 			}
 		}
 		

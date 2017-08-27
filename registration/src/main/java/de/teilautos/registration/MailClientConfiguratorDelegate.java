@@ -18,31 +18,32 @@
 */
 package de.teilautos.registration;
 
-public class ConfirmationMailParser {
+import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.delegate.JavaDelegate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-	private String content = null;
+public class MailClientConfiguratorDelegate implements JavaDelegate {
+	private final Logger logger = LoggerFactory.getLogger(MailClientConfiguratorDelegate.class);
 
-	public ConfirmationMailParser(String content) {
-		this.content = content;
-	}
+	public void execute(DelegateExecution execution) throws Exception {
+		logger.info("entering");
 
-	public String findEmail() {
-		String result = find("E-Mail: ");
-		return result;
-	}
-
-	public String findFirstname() {
-		String result = find("Vorname: ");
-		return result;
-	}
-	
-	private String find(String key) {
-		int startIndex = content.indexOf(key);
-		String sub = content.substring(startIndex);
+		execution.setVariable("host", "pop.gmail.com");
+		execution.setVariable("username", "teilautos.registrierung@gmail.com");
+		execution.setVariable("password", "iX6F4kI6BvP7F0ddxnK5");
+		execution.setVariable("from", "registrierung@teilautos.de");
+		execution.setVariable("bcc", "oliver.hock@teilautos.de");
 		
-		int nextLineSeperatorIndex = sub.indexOf("\n");
-		String result = sub.substring(key.length(), nextLineSeperatorIndex).trim();
-		
-		return result;
+		if (logger.isTraceEnabled()) {
+			logger.trace("host=" + execution.getVariable("host"));
+			logger.trace("username=" + execution.getVariable("username"));
+			logger.trace("password=" + "********");
+			logger.trace("from=" + execution.getVariable("from"));
+			logger.trace("bcc=" + execution.getVariable("bcc"));
+		}
+
+		logger.info("exiting");
 	}
+
 }

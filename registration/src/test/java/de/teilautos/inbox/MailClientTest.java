@@ -18,33 +18,31 @@
 */
 package de.teilautos.inbox;
 
-import static org.junit.Assert.*;
-
-import java.io.IOException;
-
-import javax.mail.Message;
-import javax.mail.MessagingException;
+import java.util.Collection;
 
 import org.junit.Test;
 
-public class ClientTest {
+import de.teilautos.registration.RegistrationMailModel;
+
+public class MailClientTest {
 
 	@Test
-	public void test() throws MessagingException, IOException {
-		
-//		Message[] messages = new EmailChecker(new Client()).check();
-//		
-//		System.out.println("messages.length---" + messages.length);
-//
-//		for (int i = 0, n = messages.length; i < n; i++) {
-//			Message message = messages[i];
-//			System.out.println("---------------------------------");
-//			System.out.println("Email Number " + (i + 1));
-//			System.out.println("Subject: " + message.getSubject());
-//			System.out.println("From: " + message.getFrom()[0]);
-//			System.out.println("Text: " + message.getContent().toString());
-//
-//		}
+	public void gmail() throws Exception {
+
+		String host = "pop.gmail.com";
+		String username = "teilautos.registrierung@gmail.com";
+		String password = "iX6F4kI6BvP7F0ddxnK5";
+
+		MailClient client = new MailClient(host, username, password);
+		Collection<RegistrationMailModel> messages = client.receiveMessages();
+
+		System.out.println("messages.length---" + messages.size());
+
+		for (RegistrationMailModel model : messages) {
+			System.out.println("---------------------------------");
+			System.out.println("Subject: " + model.getSubject());
+			System.out.println("Text: " + model.getContent());
+		}
 
 	}
 

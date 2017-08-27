@@ -1,1 +1,1 @@
-copy target\registration.war ..\..\camunda-bpm-wildfly10-7.7.0\server\wildfly-10.1.0.Final\standalone\deployments
+copy target\registration.war ..\..\..\Development\Teilautos\camunda-bpm-wildfly10-7.7.0\server\wildfly-10.1.0.Final\standalone\deployments

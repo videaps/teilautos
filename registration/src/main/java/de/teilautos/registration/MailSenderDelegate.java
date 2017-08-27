@@ -62,8 +62,7 @@ public class MailSenderDelegate implements JavaDelegate {
 			logger.trace("content="+contentValue);
 		}
 
-		MailSender mailSender = new MailSender(hostValue, usernameValue, passwordValue, toValue, fromValue);
-		mailSender.setBcc(bccValue);
+		MailSender mailSender = new MailSender(hostValue, usernameValue, passwordValue, toValue, fromValue, bccValue);
 		mailSender.setSubject(subjectValue);
 		mailSender.setContent(contentValue);
 		

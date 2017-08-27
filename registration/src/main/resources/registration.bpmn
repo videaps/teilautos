@@ -4,17 +4,35 @@
     <bpmn:participant id="Participant_RegistrationCheck" name="Registration Check" processRef="Process_RegistrationCheck" />
   </bpmn:collaboration>
   <bpmn:process id="Process_RegistrationCheck" name="Registration Check" isExecutable="true">
+    <bpmn:sequenceFlow id="SequenceFlow_1akk9id" sourceRef="StartEvent_CheckRegistrationPeriodically" targetRef="Task_ConfigureMailClient" />
+    <bpmn:sequenceFlow id="SequenceFlow_16gv8jb" sourceRef="Task_CheckInbox" targetRef="Task_SendIdentificationMail" />
+    <bpmn:sequenceFlow id="SequenceFlow_1c1b4c2" sourceRef="Task_SendIdentificationMail" targetRef="EndEvent_0rcn4pi" />
+    <bpmn:startEvent id="StartEvent_CheckRegistrationPeriodically" name="Check Registration Periodically">
+      <bpmn:extensionElements>
+        <camunda:formData />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>SequenceFlow_1akk9id</bpmn:outgoing>
+      <bpmn:timerEventDefinition>
+        <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">0 0-59 * * * ?</bpmn:timeCycle>
+      </bpmn:timerEventDefinition>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_0okxjpg" sourceRef="Task_ConfigureMailClient" targetRef="Task_CheckInbox" />
+    <bpmn:endEvent id="EndEvent_0rcn4pi">
+      <bpmn:incoming>SequenceFlow_1c1b4c2</bpmn:incoming>
+    </bpmn:endEvent>
     <bpmn:callActivity id="Task_SendIdentificationMail" name="Send Identification Mail" calledElement="Process_IdentificationMail">
+      <bpmn:extensionElements>
+        <camunda:in source="registrationMail" target="registrationMail" />
+        <camunda:in source="host" target="host" />
+        <camunda:in source="username" target="username" />
+        <camunda:in source="password" target="password" />
+        <camunda:in source="from" target="from" />
+        <camunda:in source="bcc" target="bcc" />
+      </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_16gv8jb</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1c1b4c2</bpmn:outgoing>
       <bpmn:multiInstanceLoopCharacteristics isSequential="true" camunda:collection="registrationMailModels" camunda:elementVariable="registrationMail" />
     </bpmn:callActivity>
-    <bpmn:sequenceFlow id="SequenceFlow_1akk9id" sourceRef="StartEvent_1lol8my" targetRef="Task_CheckInbox" />
-    <bpmn:sequenceFlow id="SequenceFlow_16gv8jb" sourceRef="Task_CheckInbox" targetRef="Task_SendIdentificationMail" />
-    <bpmn:endEvent id="EndEvent_0rcn4pi">
-      <bpmn:incoming>SequenceFlow_1c1b4c2</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:sequenceFlow id="SequenceFlow_1c1b4c2" sourceRef="Task_SendIdentificationMail" targetRef="EndEvent_0rcn4pi" />
     <bpmn:serviceTask id="Task_CheckInbox" name="Check Inbox" camunda:class="de.teilautos.registration.MailCheckerDelegate">
       <bpmn:extensionElements>
         <camunda:field name="host">        <camunda:expression>${ host }</camunda:expression>
@@ -24,56 +42,67 @@
         <camunda:field name="password">        <camunda:expression>${ password }</camunda:expression>
 </camunda:field>
       </bpmn:extensionElements>
-      <bpmn:incoming>SequenceFlow_1akk9id</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_0okxjpg</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_16gv8jb</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:startEvent id="StartEvent_1lol8my">
-      <bpmn:outgoing>SequenceFlow_1akk9id</bpmn:outgoing>
-    </bpmn:startEvent>
+    <bpmn:serviceTask id="Task_ConfigureMailClient" name="Configure Mail Client" camunda:class="de.teilautos.registration.MailClientConfiguratorDelegate">
+      <bpmn:incoming>SequenceFlow_1akk9id</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0okxjpg</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_Registration">
       <bpmndi:BPMNShape id="Participant_1qvdkz6_di" bpmnElement="Participant_RegistrationCheck">
-        <dc:Bounds x="128" y="21" width="600" height="250" />
+        <dc:Bounds x="128" y="21" width="713" height="250" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1akk9id_di" bpmnElement="SequenceFlow_1akk9id">
         <di:waypoint xsi:type="dc:Point" x="213" y="88" />
-        <di:waypoint xsi:type="dc:Point" x="302" y="88" />
+        <di:waypoint xsi:type="dc:Point" x="257" y="88" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="212.5" y="67" width="90" height="12" />
+          <dc:Bounds x="190" y="67" width="90" height="12" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="SequenceFlow_16gv8jb_di" bpmnElement="SequenceFlow_16gv8jb">
-        <di:waypoint xsi:type="dc:Point" x="402" y="88" />
-        <di:waypoint xsi:type="dc:Point" x="459" y="88" />
+        <di:waypoint xsi:type="dc:Point" x="512" y="88" />
+        <di:waypoint xsi:type="dc:Point" x="565" y="88" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="385.5" y="67" width="90" height="12" />
+          <dc:Bounds x="493.5" y="67" width="90" height="12" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="CallActivity_01pctub_di" bpmnElement="Task_SendIdentificationMail">
-        <dc:Bounds x="459" y="48" width="100" height="80" />
+        <dc:Bounds x="565" y="48" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="EndEvent_0rcn4pi_di" bpmnElement="EndEvent_0rcn4pi">
-        <dc:Bounds x="614" y="70" width="36" height="36" />
+        <dc:Bounds x="705" y="70" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="632" y="110" width="0" height="12" />
+          <dc:Bounds x="678" y="110" width="90" height="12" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_1c1b4c2_di" bpmnElement="SequenceFlow_1c1b4c2">
-        <di:waypoint xsi:type="dc:Point" x="559" y="88" />
-        <di:waypoint xsi:type="dc:Point" x="614" y="88" />
+        <di:waypoint xsi:type="dc:Point" x="665" y="88" />
+        <di:waypoint xsi:type="dc:Point" x="705" y="88" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="586.5" y="67" width="0" height="12" />
+          <dc:Bounds x="640" y="67" width="90" height="12" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="ServiceTask_13b2asv_di" bpmnElement="Task_CheckInbox">
-        <dc:Bounds x="302" y="48" width="100" height="80" />
+        <dc:Bounds x="412" y="48" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="StartEvent_1qz0l80_di" bpmnElement="StartEvent_1lol8my">
+      <bpmndi:BPMNShape id="StartEvent_03gtmjf_di" bpmnElement="StartEvent_CheckRegistrationPeriodically">
         <dc:Bounds x="177" y="70" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="150" y="110" width="0" height="12" />
+          <dc:Bounds x="77" y="110" width="58" height="36" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0okxjpg_di" bpmnElement="SequenceFlow_0okxjpg">
+        <di:waypoint xsi:type="dc:Point" x="357" y="88" />
+        <di:waypoint xsi:type="dc:Point" x="412" y="88" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="384.5" y="67" width="0" height="12" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_1jqbzn4_di" bpmnElement="Task_ConfigureMailClient">
+        <dc:Bounds x="257" y="48" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -34,12 +34,13 @@ public class MailSender {
 	public String subject = null;
 	public String content = null;
 
-	public MailSender(String host, String username, String password, String to, String from) {
+	public MailSender(String host, String username, String password, String to, String from, String bcc) {
 		this.host = host;
 		this.username = username;
 		this.password = password;
 		this.to = to;
 		this.from = from;
+		this.bcc = bcc;
 	}
 
 	public void execute() {
@@ -51,7 +52,7 @@ public class MailSender {
 		props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 		props.put("mail.smtp.auth", "true");
 		props.put("mail.smtp.port", port);
-		Session session = Session.getDefaultInstance(props, new javax.mail.Authenticator() {
+		Session session = Session.getInstance(props, new javax.mail.Authenticator() {
 			@Override
 			protected PasswordAuthentication getPasswordAuthentication() {
 				return new PasswordAuthentication(username, password);
@@ -71,8 +72,6 @@ public class MailSender {
 			}
 
 			Transport.send(message);
-
-			System.out.println("Done");
 
 		} catch (MessagingException e) {
 			throw new RuntimeException(e);

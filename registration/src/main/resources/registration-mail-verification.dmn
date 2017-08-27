@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/DMN/20151101/dmn.xsd" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="definitions_0sgihmv" name="definitions" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="registrationMailVerification" name="Registration Mail Verification">
+    <decisionTable id="decisionTable" hitPolicy="FIRST">
+      <input id="input1" label="Subject" camunda:inputVariable="">
+        <inputExpression id="inputExpression1" typeRef="string">        <text>subject</text>
+</inputExpression>
+      </input>
+      <output id="output1" label="Registration Mail" name="registrationMail" typeRef="boolean" />
+      <rule id="row-791707502-1">
+        <inputEntry id="UnaryTests_1pf36we">        <text><![CDATA["Nachricht über https://www.teilautos.de/registrieren/"]]></text>
+</inputEntry>
+        <outputEntry id="LiteralExpression_1qpqsns">        <text>true</text>
+</outputEntry>
+      </rule>
+      <rule id="row-791707502-2">
+        <inputEntry id="UnaryTests_1qa1fzg">        <text></text>
+</inputEntry>
+        <outputEntry id="LiteralExpression_0oofxwp">        <text>false</text>
+</outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>

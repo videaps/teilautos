@@ -24,6 +24,8 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.teilautos.mailing.FileReader;
+
 public class IdentificationMailCreatorDelegate implements JavaDelegate {
 	private final Logger logger = LoggerFactory.getLogger(IdentificationMailCreatorDelegate.class);
 
@@ -37,9 +39,9 @@ public class IdentificationMailCreatorDelegate implements JavaDelegate {
 			logger.trace("firstname="+firstnameValue);
 		}
 		
-		String subject = "Deine Identifizierung für Teilautos - Das regionale Carsharing";
-		String content = "Hallo " + firstnameValue
-				+ " und herzlich Willkommen bei Teilautos. \n\n Vielen Dank, dass du dich bei uns angemeldet hast. Um deine Registrierung zu vervollständigen, folge bitte diesem Link zur Identifizierung. \n\n Jetzt mit PostIdent identifizieren: https://postident.deutschepost.de/identportal/wl?an=63006679423701 \n\n Hier kannst du ganz schnell und einfach deinen Führerschein und dein Personalausweis fotografieren und hochladen. \n\n Innerhalb von nur 15 Minuten erhältst du eine Bestätigung. Im Anschluss schicken wir dir deine Zugangskarte per Post zu - was dann voraussichtlich etwas länger dauern wird. \n\n\n Wir wünschen dir eine gute Fahrt. \n\n Dein Teilautos-Team aus Beckum \n\n Teilautos - Das regionale Carsharing \n Bergstraße 12 \n 59269 Beckum \n\n Telefon: 02521 821 3314 \n E-Mail: kontakt@teilautos.de \n Web: www.teilautos.de \n";
+		FileReader fileReader = new FileReader();
+		String subject = fileReader.readFile("identification-mail-subject.txt");
+		String content = fileReader.readFile("identification-mail-content.txt");
 
 		execution.setVariable("identificationMailSubject", subject);
 		execution.setVariable("identificationMailContent", content);

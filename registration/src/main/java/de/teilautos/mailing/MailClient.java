@@ -16,7 +16,7 @@
  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-package de.teilautos.inbox;
+package de.teilautos.mailing;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -76,7 +76,7 @@ public class MailClient {
 		Message[] messages = folder.getMessages();
 		for (Message message : messages) {
 			RegistrationMailModel model = new RegistrationMailModel(message.getSubject(),
-					(String) ((MimeMultipart) message.getContent()).getBodyPart(0).getContent());
+					(String) message.getContent());
 			registrationMailModels.add(model);
 		}
 

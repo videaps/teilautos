@@ -24,7 +24,7 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.teilautos.inbox.MailSender;
+import de.teilautos.mailing.MailSender;
 
 
 public class MailSenderDelegate implements JavaDelegate {

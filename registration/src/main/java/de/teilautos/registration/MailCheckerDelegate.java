@@ -26,7 +26,7 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.teilautos.inbox.MailClient;
+import de.teilautos.mailing.MailClient;
 
 public class MailCheckerDelegate implements JavaDelegate {
 	private final Logger logger = LoggerFactory.getLogger(MailCheckerDelegate.class);

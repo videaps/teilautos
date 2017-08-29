@@ -18,10 +18,15 @@
 */
 package de.teilautos.registration;
 
+import java.io.InputStream;
+import java.util.Properties;
+
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import de.teilautos.mailing.FileReader;
 
 public class MailClientConfiguratorDelegate implements JavaDelegate {
 	private final Logger logger = LoggerFactory.getLogger(MailClientConfiguratorDelegate.class);
@@ -29,11 +34,15 @@ public class MailClientConfiguratorDelegate implements JavaDelegate {
 	public void execute(DelegateExecution execution) throws Exception {
 		logger.info("entering");
 
-		execution.setVariable("host", "pop.gmail.com");
-		execution.setVariable("username", "teilautos.registrierung@gmail.com");
-		execution.setVariable("password", "iX6F4kI6BvP7F0ddxnK5");
-		execution.setVariable("from", "registrierung@teilautos.de");
-		execution.setVariable("bcc", "oliver.hock@teilautos.de");
+		Properties properties = new Properties();
+		InputStream stream = FileReader.class.getResourceAsStream("/"+"mail-server-config.properties");
+		properties.load(stream);
+		
+		execution.setVariable("host", properties.getProperty("registration.mail.server.host"));
+		execution.setVariable("username", properties.getProperty("registration.mail.server.username"));
+		execution.setVariable("password", properties.getProperty("registration.mail.server.password"));
+		execution.setVariable("from", properties.getProperty("registration.mail.server.from"));
+		execution.setVariable("bcc", properties.getProperty("registration.mail.server.bcc"));
 		
 		if (logger.isTraceEnabled()) {
 			logger.trace("host=" + execution.getVariable("host"));

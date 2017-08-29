@@ -16,58 +16,60 @@
  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-package de.teilautos.inbox;
+package de.teilautos.mailing;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Properties;
 
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Store;
 
-public class MailChecker extends MailClient {
+import de.teilautos.registration.RegistrationMailModel;
+
+public class MailChecker {
+
+	protected String host;
+	protected String username;
+	protected String password;
+
+	private Properties properties = new Properties();
 
 	public MailChecker(String host, String username, String password) {
 		this.host = host;
 		this.username = username;
 		this.password = password;
-	}
-	
-	public Message[] execute() throws Exception {
-		Message[] messages = null;
-
-		try {
-			Properties properties = new Properties();
-
-			properties.put("mail.pop3.host", host);
-			properties.put("mail.pop3.port", "995");
-			properties.put("mail.pop3.starttls.enable", "true");
-			Session emailSession = Session.getDefaultInstance(properties);
-
-			Store store = emailSession.getStore("pop3s");
-
-			store.connect(host, username, password);
-
-			Folder emailFolder = store.getFolder("INBOX");
-			emailFolder.open(Folder.READ_ONLY);
-
-			messages = emailFolder.getMessages();
-
-			emailFolder.close(false);
-			store.close();
-
-		} catch (NoSuchProviderException e) {
-			e.printStackTrace();
-		} catch (MessagingException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-		}
 		
-		return messages;
+		properties.put("mail.pop3.host", host);
+		properties.put("mail.pop3.port", "995");
+		properties.put("mail.pop3.starttls.enable", "true");
+
+	}
+
+	public Collection<RegistrationMailModel> execute() throws MessagingException, IOException {
+		Session session = Session.getInstance(properties);
+		Store store = session.getStore("pop3s");
+		store.connect(host, username, password);
+		Folder folder = store.getFolder("INBOX");
+		folder.open(Folder.READ_WRITE);
+
+		Collection<RegistrationMailModel> registrationMailModels = new ArrayList<RegistrationMailModel>();
+		
+		Message[] messages = folder.getMessages();
+		for (Message message : messages) {
+			RegistrationMailModel model = new RegistrationMailModel(message.getSubject(),
+					(String) message.getContent());
+			registrationMailModels.add(model);
+		}
+
+		folder.close(false);
+		store.close();
+
+		return registrationMailModels;
 	}
 
 }

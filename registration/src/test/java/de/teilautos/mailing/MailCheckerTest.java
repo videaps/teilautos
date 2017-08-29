@@ -22,10 +22,10 @@ import java.util.Collection;
 
 import org.junit.Test;
 
-import de.teilautos.mailing.MailClient;
+import de.teilautos.mailing.MailChecker;
 import de.teilautos.registration.RegistrationMailModel;
 
-public class MailClientTest {
+public class MailCheckerTest {
 
 	@Test
 	public void gmail() throws Exception {
@@ -34,8 +34,8 @@ public class MailClientTest {
 		String username = "teilautos.registrierung@gmail.com";
 		String password = "iX6F4kI6BvP7F0ddxnK5";
 
-		MailClient client = new MailClient(host, username, password);
-		Collection<RegistrationMailModel> messages = client.receiveMessages();
+		MailChecker client = new MailChecker(host, username, password);
+		Collection<RegistrationMailModel> messages = client.execute();
 
 		System.out.println("messages.length---" + messages.size());
 

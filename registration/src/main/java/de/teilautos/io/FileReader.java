@@ -16,19 +16,19 @@
  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-package de.teilautos.registration;
+package de.teilautos.io;
 
-import org.camunda.bpm.application.ProcessApplication;
-import org.camunda.bpm.application.impl.ServletProcessApplication;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
-/**
- *
- */
-@ProcessApplication("registration")
-public class RegistrationApplication extends ServletProcessApplication {
-	
-	public static void main(String[] args) {
-		System.out.println("-->" + new Exception().getStackTrace()[0].getMethodName());
+import org.apache.commons.io.IOUtils;
+
+public class FileReader {
+
+	public String readFile(String fileName) throws IOException {
+		InputStream stream = FileReader.class.getResourceAsStream("/"+fileName);
+        String result = IOUtils.toString(stream, StandardCharsets.UTF_8);
+        return result;
 	}
-	
 }

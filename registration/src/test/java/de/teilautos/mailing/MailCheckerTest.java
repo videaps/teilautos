@@ -22,6 +22,8 @@ import java.util.Collection;
 
 import org.junit.Test;
 
+import de.teilautos.encryption.AesEncrypter;
+import de.teilautos.io.UserHomeReader;
 import de.teilautos.mailing.MailChecker;
 import de.teilautos.registration.RegistrationMailModel;
 
@@ -32,7 +34,9 @@ public class MailCheckerTest {
 
 		String host = "pop.gmail.com";
 		String username = "teilautos.registrierung@gmail.com";
-		String password = "iX6F4kI6BvP7F0ddxnK5";
+		
+		String secretKey = new UserHomeReader().readSecretKey("teilautos-registrierung-secret.key");
+		String password = AesEncrypter.decrypt("aGn3Pm3/kPtaUF+iC/P4Efd7MJM/Vvh9F+zVBGOw3Dc=", secretKey);
 
 		MailChecker client = new MailChecker(host, username, password);
 		Collection<RegistrationMailModel> messages = client.execute();

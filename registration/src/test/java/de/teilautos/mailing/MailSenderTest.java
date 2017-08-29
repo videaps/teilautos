@@ -20,15 +20,18 @@ package de.teilautos.mailing;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
+
 import org.junit.Test;
 
+import de.teilautos.encryption.AesEncrypter;
+import de.teilautos.io.UserHomeReader;
 import de.teilautos.mailing.MailSender;
 
 public class MailSenderTest {
 
 	String host = "pop.gmail.com";
 	String username = "teilautos.registrierung@gmail.com";
-	String password = "iX6F4kI6BvP7F0ddxnK5";
 	String to = "oliver.hock@videa.services";
 	String from = "kontakt@teilautos.de";
 	String bcc = "oliver.hock@teilautos.de";
@@ -36,7 +39,10 @@ public class MailSenderTest {
 	String content = "Teilautos Test";
 
 	@Test
-	public void test() {
+	public void test() throws IOException {
+		String secretKey = new UserHomeReader().readSecretKey("teilautos-registrierung-secret.key");
+		String password = AesEncrypter.decrypt("aGn3Pm3/kPtaUF+iC/P4Efd7MJM/Vvh9F+zVBGOw3Dc=", secretKey);
+
 		MailSender mailSender = new MailSender(host, username, password, to, from, bcc);
 		mailSender.setSubject(subject);
 		mailSender.setContent(content);

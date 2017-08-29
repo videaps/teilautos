@@ -16,19 +16,39 @@
  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-package de.teilautos.registration;
+package de.teilautos.encryption;
 
-import org.camunda.bpm.application.ProcessApplication;
-import org.camunda.bpm.application.impl.ServletProcessApplication;
+import static org.junit.Assert.*;
 
-/**
- *
- */
-@ProcessApplication("registration")
-public class RegistrationApplication extends ServletProcessApplication {
-	
-	public static void main(String[] args) {
-		System.out.println("-->" + new Exception().getStackTrace()[0].getMethodName());
+import java.io.IOException;
+
+import org.junit.Test;
+
+import de.teilautos.io.UserHomeReader;
+
+public class AesEncryptorTest {
+
+	@Test
+    public void main() throws IOException {
+    	String password = "<PUT PASSWORD HERE>";
+		String secretKey = new UserHomeReader().readSecretKey("teilautos-registrierung-secret.key");
+    	String encryptedPassword = AesEncrypter.encrypt(password, secretKey);
+    	System.out.println(encryptedPassword);
+    }
+    
+    
+
+	@Test
+	public void enryptDecrypt() throws IOException {
+		final String secretKey = new UserHomeReader().readSecretKey("teilautos-registrierung-secret.key");
+
+		String originalString = "Oliver";
+		
+		String encryptedString = AesEncrypter.encrypt(originalString, secretKey);
+		assertEquals("RE/oWlnAciHM9ixZwbOv4g==", encryptedString);
+		
+		String decryptedString = AesEncrypter.decrypt(encryptedString, secretKey);
+		assertEquals("Oliver", decryptedString);
 	}
-	
+
 }

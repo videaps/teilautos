@@ -16,19 +16,32 @@
  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-package de.teilautos.registration;
+package de.teilautos.io;
 
-import org.camunda.bpm.application.ProcessApplication;
-import org.camunda.bpm.application.impl.ServletProcessApplication;
+import java.io.BufferedReader;
+import java.io.IOException;
 
-/**
- *
- */
-@ProcessApplication("registration")
-public class RegistrationApplication extends ServletProcessApplication {
+public class UserHomeReader {
+	public static final String USER_HOME = System.getProperty("user.home");
+	public static final String FILE_SEPERATOR = System.getProperty("file.separator");
 	
-	public static void main(String[] args) {
-		System.out.println("-->" + new Exception().getStackTrace()[0].getMethodName());
+	/**
+	 * This methods gets the secret key file from users home directory and reads the first line of it. 
+	 * The secret key file shall contain only one string in the first line reflecting the key.
+	 * 
+	 * @param fileName
+	 * @return
+	 * @throws IOException
+	 */
+	public String readSecretKey(String fileName) throws IOException {
+		java.io.FileReader fileReader = new java.io.FileReader(USER_HOME+FILE_SEPERATOR+fileName);
+		BufferedReader bufferedReader = new BufferedReader(fileReader);
+		
+		String secretKey = bufferedReader.readLine().trim();
+		
+		bufferedReader.close();
+		fileReader.close();
+
+		return secretKey;
 	}
-	
 }

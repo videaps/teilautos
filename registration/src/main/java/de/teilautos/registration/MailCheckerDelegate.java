@@ -26,6 +26,8 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.teilautos.encryption.AesEncrypter;
+import de.teilautos.io.UserHomeReader;
 import de.teilautos.mailing.MailChecker;
 
 public class MailCheckerDelegate implements JavaDelegate {
@@ -48,7 +50,10 @@ public class MailCheckerDelegate implements JavaDelegate {
 			logger.trace("password="+"********");
 		}
 
-		MailChecker client = new MailChecker(hostValue, usernameValue, passwordValue);
+		String secretKey = new UserHomeReader().readSecretKey("teilautos-registrierung-secret.key");
+		String decryptedPassword = AesEncrypter.decrypt(passwordValue, secretKey);
+		
+		MailChecker client = new MailChecker(hostValue, usernameValue, decryptedPassword);
 		Collection<RegistrationMailModel> registrationMailModels = client.execute();
 		execution.setVariable("registrationMailModels", registrationMailModels);
 		

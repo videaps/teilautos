@@ -16,19 +16,30 @@
  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-package de.teilautos.mailing;
+package de.teilautos.io;
+
+import static org.junit.Assert.*;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 
-import org.apache.commons.io.IOUtils;
+import org.junit.Test;
 
-public class FileReader {
+public class UserHomeReaderTest {
 
-	public String readFile(String fileName) throws IOException {
-		InputStream stream = FileReader.class.getResourceAsStream("/"+fileName);
-        String result = IOUtils.toString(stream, StandardCharsets.UTF_8);
-        return result;
+	@Test
+	public void userHomeDir() {
+		String userHomeDir = UserHomeReader.USER_HOME;
+		System.out.println(userHomeDir);
+		assertNotNull(userHomeDir);
 	}
+	
+	@Test
+	public void readSekretKey() throws IOException {
+		UserHomeReader reader = new UserHomeReader();
+		String secretKey = reader.readSecretKey("teilautos-registrierung-secret.key");
+		System.out.println(secretKey);
+		assertNotNull(secretKey);
+	}
+
+
 }

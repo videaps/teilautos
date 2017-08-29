@@ -26,7 +26,8 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.teilautos.mailing.FileReader;
+import de.teilautos.io.FileReader;
+import de.teilautos.io.UserHomeReader;
 
 public class MailClientConfiguratorDelegate implements JavaDelegate {
 	private final Logger logger = LoggerFactory.getLogger(MailClientConfiguratorDelegate.class);

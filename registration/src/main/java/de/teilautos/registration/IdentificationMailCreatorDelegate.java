@@ -32,26 +32,30 @@ public class IdentificationMailCreatorDelegate implements JavaDelegate {
 	private Expression firstname;
 
 	public void execute(DelegateExecution execution) throws Exception {
-		logger.info("entering");
+		logger.trace("entering");
 
 		String firstnameValue = (String) firstname.getValue(execution);
 		if (logger.isTraceEnabled()) {
-			logger.trace("firstname="+firstnameValue);
+			logger.debug("firstname="+firstnameValue);
 		}
+		
+		logger.info("creating identification mail for user: "+firstnameValue);
 		
 		FileReader fileReader = new FileReader();
 		String subject = fileReader.readFile("identification-mail-subject.txt");
 		String content = fileReader.readFile("identification-mail-content.txt");
 
+		logger.info("done");
+		
 		execution.setVariable("identificationMailSubject", subject);
 		execution.setVariable("identificationMailContent", content);
 
 		if (logger.isTraceEnabled()) {
-			logger.trace("identificationMailSubject=" + subject);
-			logger.trace("identificationMailContent=" + content);
+			logger.debug("identificationMailSubject=" + subject);
+			logger.debug("identificationMailContent=" + content);
 		}
 
-		logger.info("exiting");
+		logger.trace("exiting");
 	}
 
 }

@@ -24,6 +24,8 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import de.teilautos.encryption.AesEncrypter;
+import de.teilautos.io.UserHomeReader;
 import de.teilautos.mailing.MailSender;
 
 
@@ -41,7 +43,7 @@ public class MailSenderDelegate implements JavaDelegate {
 	private Expression content;
 
 	public void execute(DelegateExecution execution) throws Exception {
-		logger.info("entering");
+		logger.trace("entering");
 		
 		String hostValue = (String) host.getValue(execution);
 		String usernameValue = (String) username.getValue(execution);
@@ -53,22 +55,27 @@ public class MailSenderDelegate implements JavaDelegate {
 		String contentValue = (String) content.getValue(execution);
 		
 		if (logger.isTraceEnabled()) {
-			logger.trace("host=" + hostValue);
-			logger.trace("username=" + usernameValue);
-			logger.trace("to=" + toValue);
-			logger.trace("from=" + fromValue);
-			logger.trace("bcc="+bccValue);
-			logger.trace("subject="+subjectValue);
-			logger.trace("content="+contentValue);
+			logger.debug("host=" + hostValue);
+			logger.debug("username=" + usernameValue);
+			logger.debug("to=" + toValue);
+			logger.debug("from=" + fromValue);
+			logger.debug("bcc="+bccValue);
+			logger.debug("subject="+subjectValue);
+			logger.debug("content="+contentValue);
 		}
 
-		MailSender mailSender = new MailSender(hostValue, usernameValue, passwordValue, toValue, fromValue, bccValue);
+		String secretKey = new UserHomeReader().readSecretKey("teilautos-registrierung-secret.key");
+		String decryptedPassword = AesEncrypter.decrypt(passwordValue, secretKey);
+
+		MailSender mailSender = new MailSender(hostValue, usernameValue, decryptedPassword, toValue, fromValue, bccValue);
 		mailSender.setSubject(subjectValue);
 		mailSender.setContent(contentValue);
 		
+		logger.info("sending identification mail to user: "+ toValue);
 		mailSender.execute();
+		logger.info("done");
 		
-		logger.info("exiting");
+		logger.trace("exiting");
 	}
 
 }

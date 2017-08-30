@@ -38,35 +38,38 @@ public class MailCheckerDelegate implements JavaDelegate {
 	private Expression password;
 
 	public void execute(DelegateExecution execution) throws Exception {
-		logger.info("entering");
+		logger.trace("entering");
 		
 		String hostValue = (String) host.getValue(execution);
 		String usernameValue = (String) username.getValue(execution);
 		String passwordValue = (String) password.getValue(execution);
 
 		if (logger.isTraceEnabled()) {
-			logger.trace("host=" + hostValue);
-			logger.trace("username=" + usernameValue);
-			logger.trace("password="+"********");
+			logger.debug("host=" + hostValue);
+			logger.debug("username=" + usernameValue);
+			logger.debug("password="+"********");
 		}
 
 		String secretKey = new UserHomeReader().readSecretKey("teilautos-registrierung-secret.key");
 		String decryptedPassword = AesEncrypter.decrypt(passwordValue, secretKey);
 		
+		logger.info("checking mail for registration");
 		MailChecker client = new MailChecker(hostValue, usernameValue, decryptedPassword);
+		logger.info("done");
+		
 		Collection<RegistrationMailModel> registrationMailModels = client.execute();
 		execution.setVariable("registrationMailModels", registrationMailModels);
 		
 		if (logger.isTraceEnabled()) {
-			logger.trace("messages.length=" + (registrationMailModels != null ? registrationMailModels.size() : 0));
+			logger.debug("messages.length=" + (registrationMailModels != null ? registrationMailModels.size() : 0));
 			
 			for (RegistrationMailModel message : registrationMailModels) {
-				logger.trace("subject=" + message.getSubject());
-				logger.trace("content=" + message.getContent());
+				logger.debug("subject=" + message.getSubject());
+				logger.debug("content=" + message.getContent());
 			}
 		}
 		
-		logger.info("exiting");
+		logger.trace("exiting");
 	}
 
 }

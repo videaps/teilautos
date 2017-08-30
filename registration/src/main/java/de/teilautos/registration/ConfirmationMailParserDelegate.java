@@ -30,11 +30,11 @@ public class ConfirmationMailParserDelegate implements JavaDelegate {
 	private Expression content;
 
 	public void execute(DelegateExecution execution) throws Exception {
-		logger.info("entering");
+		logger.trace("entering");
 
 		String contentValue = (String) content.getValue(execution);
 		if (logger.isTraceEnabled()) {
-			logger.trace("content=" + contentValue);
+			logger.debug("content=" + contentValue);
 		}
 
 		ConfirmationMailParser parser = new ConfirmationMailParser(contentValue);
@@ -45,11 +45,11 @@ public class ConfirmationMailParserDelegate implements JavaDelegate {
 		execution.setVariable("confirmationMailFirstname", firstname);
 
 		if (logger.isTraceEnabled()) {
-			logger.trace("confirmationMailEmail" + email);
-			logger.trace("confirmationMailFirstname=" + firstname);
+			logger.debug("confirmationMailEmail" + email);
+			logger.debug("confirmationMailFirstname=" + firstname);
 		}
 
-		logger.info("exiting");
+		logger.trace("exiting");
 	}
 
 }

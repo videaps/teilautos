@@ -21,7 +21,12 @@ package de.teilautos.io;
 import java.io.BufferedReader;
 import java.io.IOException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class UserHomeReader {
+	private final Logger logger = LoggerFactory.getLogger(UserHomeReader.class);
+
 	public static final String USER_HOME = System.getProperty("user.home");
 	public static final String FILE_SEPERATOR = System.getProperty("file.separator");
 	
@@ -34,7 +39,10 @@ public class UserHomeReader {
 	 * @throws IOException
 	 */
 	public String readSecretKey(String fileName) throws IOException {
-		java.io.FileReader fileReader = new java.io.FileReader(USER_HOME+FILE_SEPERATOR+fileName);
+		String filePathName = USER_HOME+FILE_SEPERATOR+fileName;
+		logger.debug("filePathName="+filePathName);
+		
+		java.io.FileReader fileReader = new java.io.FileReader(filePathName);
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
 		
 		String secretKey = bufferedReader.readLine().trim();

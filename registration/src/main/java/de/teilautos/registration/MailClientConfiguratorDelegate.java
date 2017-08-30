@@ -27,13 +27,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.teilautos.io.FileReader;
-import de.teilautos.io.UserHomeReader;
 
 public class MailClientConfiguratorDelegate implements JavaDelegate {
 	private final Logger logger = LoggerFactory.getLogger(MailClientConfiguratorDelegate.class);
 
 	public void execute(DelegateExecution execution) throws Exception {
-		logger.info("entering");
+		logger.trace("entering");
 
 		Properties properties = new Properties();
 		InputStream stream = FileReader.class.getResourceAsStream("/"+"mail-server-config.properties");
@@ -46,14 +45,14 @@ public class MailClientConfiguratorDelegate implements JavaDelegate {
 		execution.setVariable("bcc", properties.getProperty("registration.mail.server.bcc"));
 		
 		if (logger.isTraceEnabled()) {
-			logger.trace("host=" + execution.getVariable("host"));
-			logger.trace("username=" + execution.getVariable("username"));
-			logger.trace("password=" + "********");
-			logger.trace("from=" + execution.getVariable("from"));
-			logger.trace("bcc=" + execution.getVariable("bcc"));
+			logger.debug("host=" + execution.getVariable("host"));
+			logger.debug("username=" + execution.getVariable("username"));
+			logger.debug("password=" + "********");
+			logger.debug("from=" + execution.getVariable("from"));
+			logger.debug("bcc=" + execution.getVariable("bcc"));
 		}
 
-		logger.info("exiting");
+		logger.trace("exiting");
 	}
 
 }

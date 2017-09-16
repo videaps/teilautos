@@ -16,7 +16,7 @@
  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-package de.teilautos.tariff.calculation;
+package de.teilautos.tariff.calculation.services;
 
 import static org.junit.Assert.*;
 
@@ -46,7 +46,7 @@ public class CalculationServiceTest {
 
 		BigDecimal hourlyRate = new BigDecimal(price.getHourlyRate()).setScale(2, RoundingMode.HALF_UP);
 		assertEquals("1.70", hourlyRate.toString());
-		
+
 		BigDecimal kilometerPrice = new BigDecimal(price.getKilometerPrice()).setScale(2, RoundingMode.HALF_UP);
 		assertEquals("0.30", kilometerPrice.toPlainString());
 	}
@@ -56,24 +56,30 @@ public class CalculationServiceTest {
 		float rate = calculationService.hourlyRatesPerYear("1000", "7.5", "1.70");
 		assertEquals(226.67f, rate, 0.01);
 	}
-	
+
 	@Test
 	public void kilometerPricesPerYear() {
 		float price = calculationService.kilometerPricesPerYear("1000", "0.30");
 		assertEquals(300.00f, price, 0.01);
 	}
-	
+
 	@Test
 	public void yearlyContribution() {
 		float contribution = calculationService.yearlyContribution("7.50");
 		assertEquals(90.00f, contribution, 0.01);
 	}
-	
+
 	@Test
-	public void yearlyCostOccupant() {
+	public void yearlyCostCarsharing() {
 		Price price = calculationService.getPrice("Normal");
-		float cost = calculationService.yearlyCostOccupant("1000", price, "7.5");
+		float cost = calculationService.yearlyCostCarsharing("1000", price, "7.5");
 		assertEquals(616.66, cost, 0.01);
+	}
+
+	@Test
+	public void yearlyCostOwnCar() {
+		float cost = calculationService.yearlyCostOwnCar("Renault Clio 1.2 16V 75 Start", "1000");
+		assertEquals(5184.00f, cost, 0.01);
 	}
 
 }

@@ -21,6 +21,7 @@ package de.teilautos.tariff.calculation.services;
 import org.openl.rules.runtime.RulesEngineFactory;
 
 import de.teilautos.tariff.calculation.rules.CalculationRules;
+import de.teilautos.tariff.calculation.rules.CarCost;
 import de.teilautos.tariff.calculation.rules.Price;
 
 /**
@@ -58,7 +59,7 @@ public class CalculationService {
 	 * @param kilometerPerHour
 	 * @return
 	 */
-	public float yearlyCostOccupant(String kilometerPerYear, Price price, String kilometerPerHour) {
+	public float yearlyCostCarsharing(String kilometerPerYear, Price price, String kilometerPerHour) {
 		float yearlyContribution = yearlyContribution(price.getMonthlyRate());
 		float hourlyRatesPerYear = hourlyRatesPerYear(kilometerPerYear, kilometerPerHour, price.getHourlyRate());
 		float kilometerPricesPerYear = kilometerPricesPerYear(kilometerPerYear, price.getKilometerPrice());
@@ -109,5 +110,22 @@ public class CalculationService {
 		
 		return yearlyContribution;
 	}
-	
+
+	/**
+	 * 
+	 * @param carType
+	 * @param kilometerPerYear
+	 * @return
+	 */
+	public float yearlyCostOwnCar(String carType, String kilometerPerYear) {
+		int kmYear = Integer.valueOf(kilometerPerYear);
+
+		CarCost carCost = rules.getCarCostByType(carType);
+		
+		float fixCost = 12 * Float.valueOf(carCost.getMonthlyFixCost());
+		float kmCost = kmYear * Float.valueOf(carCost.getCostPerKilometer());
+		float cost = fixCost + kmCost;
+		
+		return cost;
+	}
 }

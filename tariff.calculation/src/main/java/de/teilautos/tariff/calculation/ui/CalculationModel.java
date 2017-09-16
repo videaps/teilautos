@@ -22,8 +22,9 @@ public class CalculationModel {
 
 	private String kilometer = "0";
 	private String tariff;
-	private String costOccupant;
-	
+	private String costCarsharing;
+	private String costOwnCar;
+
 	public String getKilometer() {
 		return kilometer;
 	}
@@ -40,13 +41,20 @@ public class CalculationModel {
 		this.tariff = tariff;
 	}
 
-	public String getCostOccupant() {
-		return costOccupant;
+	public String getCostCarsharing() {
+		return costCarsharing;
 	}
 
-	public void setCostOccupant(String costOccupant) {
-		this.costOccupant = costOccupant;
+	public void setCostCarsharing(String costCarsharing) {
+		this.costCarsharing = costCarsharing;
 	}
-	
+
+	public String getCostOwnCar() {
+		return costOwnCar;
+	}
+
+	public void setCostOwnCar(String costOwnCar) {
+		this.costOwnCar = costOwnCar;
+	}
 
 }

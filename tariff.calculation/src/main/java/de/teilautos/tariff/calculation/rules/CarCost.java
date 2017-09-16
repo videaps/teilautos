@@ -18,27 +18,31 @@
 */
 package de.teilautos.tariff.calculation.rules;
 
-public interface CalculationRules {
+public class CarCost {
 
-	/**
-	 * Gets a tariff by distance per year.
-	 * 
-	 * @param kilometer
-	 */
-	String getTariffByDistance(int kilometer);
-	
-	/**
-	 * 
-	 * @param tariffName
-	 * @return
-	 */
-	Price getPriceByTariff(String tariffName);
-	
-	/**
-	 * 
-	 * @param carType
-	 * @return
-	 */
-	CarCost getCarCostByType(String type);
-	
+	private String monthlyFixCost;
+	private String costPerKilometer;
+
+	public CarCost(String monthlyFixCost, String costPerKilometer) {
+		super();
+		this.monthlyFixCost = monthlyFixCost;
+		this.costPerKilometer = costPerKilometer;
+	}
+
+	public String getMonthlyFixCost() {
+		return monthlyFixCost;
+	}
+
+	public void setMonthlyFixCost(String monthlyFixCost) {
+		this.monthlyFixCost = monthlyFixCost;
+	}
+
+	public String getCostPerKilometer() {
+		return costPerKilometer;
+	}
+
+	public void setCostPerKilometer(String costPerKilometer) {
+		this.costPerKilometer = costPerKilometer;
+	}
+
 }

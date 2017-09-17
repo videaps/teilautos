@@ -16,45 +16,45 @@
  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-package de.teilautos.tariff.calculation.rules;
+package de.teilautos.tariff.calculation.domains;
 
 /**
  * 
  */
 public class Price {
 
-	private String hourlyRate;
-	private String kilometerPrice;
-	private String monthlyRate;
+	private Float hourlyRate;
+	private Float kilometerPrice;
+	private Float monthlyRate;
 
-	public Price(String hourlyRate, String kilometerPrice, String monthlyRate) {
+	public Price(Float hourlyRate, Float kilometerPrice, Float monthlyRate) {
 		super();
 		this.hourlyRate = hourlyRate;
 		this.kilometerPrice = kilometerPrice;
 		this.monthlyRate = monthlyRate;
 	}
 
-	public String getHourlyRate() {
+	public Float getHourlyRate() {
 		return hourlyRate;
 	}
 
-	public void setHourlyRate(String hourlyRate) {
+	public void setHourlyRate(Float hourlyRate) {
 		this.hourlyRate = hourlyRate;
 	}
 
-	public String getKilometerPrice() {
+	public Float getKilometerPrice() {
 		return kilometerPrice;
 	}
 
-	public void setKilometerPrice(String kilometerPrice) {
+	public void setKilometerPrice(Float kilometerPrice) {
 		this.kilometerPrice = kilometerPrice;
 	}
 
-	public String getMonthlyRate() {
+	public Float getMonthlyRate() {
 		return monthlyRate;
 	}
 
-	public void setMonthlyRate(String monthlyRate) {
+	public void setMonthlyRate(Float monthlyRate) {
 		this.monthlyRate = monthlyRate;
 	}
 

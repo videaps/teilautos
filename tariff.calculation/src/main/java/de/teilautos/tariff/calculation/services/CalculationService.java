@@ -20,9 +20,10 @@ package de.teilautos.tariff.calculation.services;
 
 import org.openl.rules.runtime.RulesEngineFactory;
 
+import de.teilautos.tariff.calculation.domains.CarCost;
+import de.teilautos.tariff.calculation.domains.DetailCarCost;
+import de.teilautos.tariff.calculation.domains.Price;
 import de.teilautos.tariff.calculation.rules.CalculationRules;
-import de.teilautos.tariff.calculation.rules.CarCost;
-import de.teilautos.tariff.calculation.rules.Price;
 
 /**
  *
@@ -51,6 +52,16 @@ public class CalculationService {
 		Price price = rules.getPriceByTariff(tariffName);
 		return price;
 	}
+	
+	/**
+	 * 
+	 * @param carTypeName
+	 * @return
+	 */
+	public CarCost getCarCost(String carTypeName) {
+		CarCost carCost = rules.getCarCostByType(carTypeName);
+		return carCost;
+	}
 
 	/**
 	 * 
@@ -59,7 +70,7 @@ public class CalculationService {
 	 * @param kilometerPerHour
 	 * @return
 	 */
-	public float yearlyCostCarsharing(String kilometerPerYear, Price price, String kilometerPerHour) {
+	public float yearlyCostCarsharing(Integer kilometerPerYear, Price price, Float kilometerPerHour) {
 		float yearlyContribution = yearlyContribution(price.getMonthlyRate());
 		float hourlyRatesPerYear = hourlyRatesPerYear(kilometerPerYear, kilometerPerHour, price.getHourlyRate());
 		float kilometerPricesPerYear = kilometerPricesPerYear(kilometerPerYear, price.getKilometerPrice());
@@ -74,12 +85,8 @@ public class CalculationService {
 	 * @param kilometerPrice
 	 * @return
 	 */
-	public float kilometerPricesPerYear(String kilometerPerYear, String kilometerPrice) {
-		int kmYear = Integer.valueOf(kilometerPerYear);
-		float kmPrice = Float.valueOf(kilometerPrice);
-		
-		float priceYear = kmYear * kmPrice;
-		
+	public float kilometerPricesPerYear(Integer kilometerPerYear, Float kilometerPrice) {
+		float priceYear = kilometerPerYear * kilometerPrice;
 		return priceYear;
 	}
 
@@ -89,13 +96,8 @@ public class CalculationService {
 	 * @param hourlyRate
 	 * @return
 	 */
-	public float hourlyRatesPerYear(String kilometerPerYear, String kilometerPerHour, String hourlyRate) {
-		int kmYear = Integer.valueOf(kilometerPerYear);
-		float kmHour = Float.valueOf(kilometerPerHour);
-		float rateHour = Float.valueOf(hourlyRate);
-
-		float rateYear = ( kmYear / kmHour ) * rateHour;
-		
+	public float hourlyRatesPerYear(Integer kilometerPerYear, Float kilometerPerHour, Float hourlyRate) {
+		float rateYear = ( kilometerPerYear / kilometerPerHour ) * hourlyRate;
 		return rateYear;
 	}
 
@@ -103,29 +105,36 @@ public class CalculationService {
 	 * @param monthlyRate
 	 * @return
 	 */
-	public float yearlyContribution(String monthlyRate) {
-		float rate = Float.valueOf(monthlyRate);
-		
-		float yearlyContribution = 12 * rate;
-		
-		return yearlyContribution;
+	public float yearlyContribution(Float monthlyRate) {
+		return 12 * monthlyRate;
 	}
 
+	public DetailCarCost yearlyDetailCostOwnCar(String carType, Integer kilometerPerYear) {
+		CarCost carCost = rules.getCarCostByType(carType);
+
+		DetailCarCost detailCarCost = new DetailCarCost();
+		
+		detailCarCost.setFixCost(12 * carCost.getMonthlyFixCost());
+		detailCarCost.setGarageCost(12 * carCost.getMonthlyGarageCost());
+		detailCarCost.setValueLoss(12 * carCost.getMonthlyValueLoss());
+		
+		float consumptionCost = kilometerPerYear * carCost.getConsumptionCost();
+		detailCarCost.setOperationsCost(consumptionCost);
+		
+		return detailCarCost;
+	}
 	/**
 	 * 
 	 * @param carType
 	 * @param kilometerPerYear
 	 * @return
 	 */
-	public float yearlyCostOwnCar(String carType, String kilometerPerYear) {
-		int kmYear = Integer.valueOf(kilometerPerYear);
-
+	public float yearlyTotalCostOwnCar(String carType, Integer kilometerPerYear) {
 		CarCost carCost = rules.getCarCostByType(carType);
 		
-		float fixCost = 12 * Float.valueOf(carCost.getMonthlyFixCost());
-		float kmCost = kmYear * Float.valueOf(carCost.getCostPerKilometer());
-		float cost = fixCost + kmCost;
+		float consumptionCost = kilometerPerYear * carCost.getConsumptionCost();
+		float totalCost = 12 * ( carCost.getMonthlyFixCost() + carCost.getMonthlyGarageCost() + carCost.getMonthlyValueLoss() ) + consumptionCost ;
 		
-		return cost;
+		return totalCost;
 	}
 }

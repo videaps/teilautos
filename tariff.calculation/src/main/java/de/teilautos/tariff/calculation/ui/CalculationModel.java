@@ -28,6 +28,79 @@ public class CalculationModel {
 	private String costCarsharing;
 	private String costOwnCar;
 
+	private String valueLossCarsharing;
+	private String valueLossOwnCar;
+	private String fixCostCarsharing;
+	private String fixCostOwnCar;
+	private String garageCostCarsharing;
+	private String garageCostOwnCar;
+	private String operationsCostCarsharing;
+	private String operationsCostOwnCar;
+	
+	public String getValueLossCarsharing() {
+		return valueLossCarsharing;
+	}
+
+	public void setValueLossCarsharing(String valueLossCarsharing) {
+		this.valueLossCarsharing = valueLossCarsharing;
+	}
+
+	public String getValueLossOwnCar() {
+		return valueLossOwnCar;
+	}
+
+	public void setValueLossOwnCar(String valueLossOwnCar) {
+		this.valueLossOwnCar = valueLossOwnCar;
+	}
+
+	public String getFixCostCarsharing() {
+		return fixCostCarsharing;
+	}
+
+	public void setFixCostCarsharing(String fixCostCarsharing) {
+		this.fixCostCarsharing = fixCostCarsharing;
+	}
+
+	public String getFixCostOwnCar() {
+		return fixCostOwnCar;
+	}
+
+	public void setFixCostOwnCar(String fixCostOwnCar) {
+		this.fixCostOwnCar = fixCostOwnCar;
+	}
+
+	public String getGarageCostCarsharing() {
+		return garageCostCarsharing;
+	}
+
+	public void setGarageCostCarsharing(String garageCostCarsharing) {
+		this.garageCostCarsharing = garageCostCarsharing;
+	}
+
+	public String getGarageCostOwnCar() {
+		return garageCostOwnCar;
+	}
+
+	public void setGarageCostOwnCar(String garageCostOwnCar) {
+		this.garageCostOwnCar = garageCostOwnCar;
+	}
+
+	public String getOperationsCostCarsharing() {
+		return operationsCostCarsharing;
+	}
+
+	public void setOperationsCostCarsharing(String operationsCostCarsharing) {
+		this.operationsCostCarsharing = operationsCostCarsharing;
+	}
+
+	public String getOperationsCostOwnCar() {
+		return operationsCostOwnCar;
+	}
+
+	public void setOperationsCostOwnCar(String operationsCostOwnCar) {
+		this.operationsCostOwnCar = operationsCostOwnCar;
+	}
+
 	public String getKilometer() {
 		return kilometer;
 	}

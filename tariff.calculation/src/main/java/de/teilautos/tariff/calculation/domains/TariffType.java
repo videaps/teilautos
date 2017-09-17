@@ -18,34 +18,17 @@
 */
 package de.teilautos.tariff.calculation.domains;
 
-public class Tariff {
+public enum TariffType {
 
+	GELEGENTLICH("Gelegentlich"), NORMAL("Normal"), VIEL("Viel");
+	
 	private String name;
-	private int lowerBound;
-	private int upperBound;
 
+	private TariffType(String name) {
+		this.name = name;
+	}
+	
 	public String getName() {
 		return name;
 	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public int getLowerBound() {
-		return lowerBound;
-	}
-
-	public void setLowerBound(int lowerBound) {
-		this.lowerBound = lowerBound;
-	}
-
-	public int getUpperBound() {
-		return upperBound;
-	}
-
-	public void setUpperBound(int upperBound) {
-		this.upperBound = upperBound;
-	}
-
 }

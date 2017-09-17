@@ -25,7 +25,9 @@ import java.math.RoundingMode;
 
 import org.junit.Test;
 
-import de.teilautos.tariff.calculation.rules.Price;
+import de.teilautos.tariff.calculation.domains.CarCost;
+import de.teilautos.tariff.calculation.domains.CarType;
+import de.teilautos.tariff.calculation.domains.Price;
 import de.teilautos.tariff.calculation.services.CalculationService;
 
 public class CalculationServiceTest {
@@ -53,33 +55,39 @@ public class CalculationServiceTest {
 
 	@Test
 	public void hourlyRatesPerYear() {
-		float rate = calculationService.hourlyRatesPerYear("1000", "7.5", "1.70");
+		float rate = calculationService.hourlyRatesPerYear(1000, 7.5f, 1.70f);
 		assertEquals(226.67f, rate, 0.01);
 	}
 
 	@Test
 	public void kilometerPricesPerYear() {
-		float price = calculationService.kilometerPricesPerYear("1000", "0.30");
+		float price = calculationService.kilometerPricesPerYear(1000, 0.30f);
 		assertEquals(300.00f, price, 0.01);
+	}
+	
+	@Test
+	public void carTypeCost() {
+		CarCost carCost = calculationService.getCarCost(CarType.KLEINSTWAGEN.getName());
+		assertEquals(Float.valueOf(73), carCost.getMonthlyFixCost());
 	}
 
 	@Test
 	public void yearlyContribution() {
-		float contribution = calculationService.yearlyContribution("7.50");
+		float contribution = calculationService.yearlyContribution(7.50f);
 		assertEquals(90.00f, contribution, 0.01);
 	}
 
 	@Test
 	public void yearlyCostCarsharing() {
 		Price price = calculationService.getPrice("Normal");
-		float cost = calculationService.yearlyCostCarsharing("1000", price, "7.5");
+		float cost = calculationService.yearlyCostCarsharing(1000, price, 7.5f);
 		assertEquals(616.66, cost, 0.01);
 	}
 
 	@Test
 	public void yearlyCostOwnCar() {
-		float cost = calculationService.yearlyCostOwnCar("Renault Clio 1.2 16V 75 Start", "1000");
-		assertEquals(5184.00f, cost, 0.01);
+		float cost = calculationService.yearlyTotalCostOwnCar(CarType.KOMPAKTKLASSE.getName(), 1000);
+		assertEquals(3666.00f, cost, 0.01);
 	}
 
 }

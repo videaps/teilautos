@@ -18,30 +18,41 @@
 */
 package de.teilautos.tariff.calculation.rules;
 
+import static org.junit.Assert.*;
+
+import org.junit.Test;
+import org.openl.rules.runtime.RulesEngineFactory;
+
 import de.teilautos.tariff.calculation.domains.CarCost;
+import de.teilautos.tariff.calculation.domains.CarType;
 import de.teilautos.tariff.calculation.domains.Price;
+import de.teilautos.tariff.calculation.domains.TariffType;
 
-public interface CalculationRules {
+public class CalculationRulesTest {
+	
+	private final RulesEngineFactory<CalculationRules> rulesEngine = new RulesEngineFactory<CalculationRules>(
+			"src/main/resources/CalculationRules.xls", CalculationRules.class);
+	private CalculationRules rules = (CalculationRules) rulesEngine.newInstance();
 
-	/**
-	 * Gets a tariff by distance per year.
-	 * 
-	 * @param kilometer
-	 */
-	String getTariffByDistance(int kilometer);
-	
-	/**
-	 * 
-	 * @param tariffName
-	 * @return
-	 */
-	Price getPriceByTariff(String tariffName);
-	
-	/**
-	 * 
-	 * @param carType
-	 * @return
-	 */
-	CarCost getCarCostByType(String type);
-	
+	@Test
+	public void price() {
+		Price price = rules.getPriceByTariff(TariffType.GELEGENTLICH.getName());
+		
+		Float hourlyRate = price.getHourlyRate();
+		assertNotNull(hourlyRate);
+		
+		Float kilometerPrice = price.getKilometerPrice();
+		assertNotNull(kilometerPrice);
+		
+		Float monthlyRate = price.getMonthlyRate();
+		assertNotNull(monthlyRate);
+	}
+
+	@Test
+	public void carCost() {
+		CarCost carCost = rules.getCarCostByType(CarType.KOMPAKTKLASSE.getName());
+		
+		Float listPrice = carCost.getListPrice();
+		assertNotNull(listPrice);
+	}
 }

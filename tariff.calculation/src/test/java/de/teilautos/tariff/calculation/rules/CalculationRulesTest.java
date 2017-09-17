@@ -26,7 +26,7 @@ import org.openl.rules.runtime.RulesEngineFactory;
 import de.teilautos.tariff.calculation.domains.CarCost;
 import de.teilautos.tariff.calculation.domains.CarType;
 import de.teilautos.tariff.calculation.domains.Price;
-import de.teilautos.tariff.calculation.domains.TariffType;
+import de.teilautos.tariff.calculation.domains.Tariff;
 
 public class CalculationRulesTest {
 	
@@ -36,7 +36,7 @@ public class CalculationRulesTest {
 
 	@Test
 	public void price() {
-		Price price = rules.getPriceByTariff(TariffType.GELEGENTLICH.getName());
+		Price price = rules.getPriceByTariff(Tariff.GELEGENTLICH.getName());
 		
 		Float hourlyRate = price.getHourlyRate();
 		assertNotNull(hourlyRate);

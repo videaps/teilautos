@@ -18,13 +18,13 @@
 */
 package de.teilautos.tariff.calculation.domains;
 
-public enum TariffType {
+public enum Tariff {
 
 	GELEGENTLICH("Gelegentlich"), NORMAL("Normal"), VIEL("Viel");
 	
 	private String name;
 
-	private TariffType(String name) {
+	private Tariff(String name) {
 		this.name = name;
 	}
 	

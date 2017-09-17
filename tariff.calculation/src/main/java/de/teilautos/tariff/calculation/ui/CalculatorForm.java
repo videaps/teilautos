@@ -20,15 +20,20 @@ package de.teilautos.tariff.calculation.ui;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import com.vaadin.data.Binder;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
+import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Slider;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
+import de.teilautos.tariff.calculation.domains.CarType;
 import de.teilautos.tariff.calculation.rules.Price;
 import de.teilautos.tariff.calculation.services.CalculationService;
 
@@ -40,11 +45,12 @@ public class CalculatorForm extends FormLayout {
 	private Label kmLabel = new Label("Meine gefahrenen Kilometer pro Jahr");
 	private TextField kilometer = new TextField();
 	private Label kmUnitLabel = new Label(" km");
-	private Slider kmSlider = new Slider(0, 10000);
+	private Slider kmSlider = new Slider(0, 15000);
 
 	private TextField tariff = new TextField();
 	private TextField costCarsharing = new TextField();
 	private TextField costOwnCar = new TextField();
+	private NativeSelect<String> ownCar = new NativeSelect<>("Eigenes Auto");
 
 	private CalculationService calculationService = new CalculationService();
 	private CalculationModel calculationModel = new CalculationModel();
@@ -83,7 +89,9 @@ public class CalculatorForm extends FormLayout {
 		costCarsharing.setEnabled(false);
 
 		// Own Car Cost
-		float costOwnCarFloat = calculationService.yearlyCostOwnCar("Renault Clio 1.2 16V 75 Start",
+		// Renault Clio 1.2 16V 75 Start
+		// VW up! 1.0 BMT take up!
+		float costOwnCarFloat = calculationService.yearlyCostOwnCar(CarType.KLEINSTWAGEN.getName(),
 				calculationModel.getKilometer());
 		BigDecimal costOwnCarBd = new BigDecimal(costOwnCarFloat).setScale(2, RoundingMode.HALF_UP);
 		calculationModel.setCostOwnCar(costOwnCarBd.toPlainString());
@@ -97,13 +105,30 @@ public class CalculatorForm extends FormLayout {
 		return costPane;
 	}
 
-	private VerticalLayout renderInputPane() {
-		kilometer.setValue(calculationModel.getKilometer());
+	private List<String> allCarTypeNames() {
+		List<String> names = new ArrayList<>();
+		for (CarType carType : CarType.values()) {
+			String name = carType.getName();
+			names.add(name);
+		}
+		return names;
+	}
 
+	private VerticalLayout renderInputPane() {
+		kilometer.setWidth("100px");
+		kilometer.setValue(calculationModel.getKilometer());
+		kilometer.setEnabled(false);
+
+		kmSlider.setWidth("500px");
 		kmSlider.setValue(Double.valueOf(calculationModel.getKilometer()));
 		kmSlider.addValueChangeListener(e -> this.slide());
 
-		HorizontalLayout kmPane = new HorizontalLayout(kilometer, kmUnitLabel, kmSlider);
+		ownCar.setEmptySelectionAllowed(false);
+		ownCar.setItems(allCarTypeNames());
+		ownCar.setSelectedItem(CarType.KLEINSTWAGEN.getName());
+		ownCar.addValueChangeListener(e -> this.slide());
+
+		HorizontalLayout kmPane = new HorizontalLayout(kilometer, kmUnitLabel, kmSlider, ownCar);
 		VerticalLayout inputPane = new VerticalLayout(kmLabel, kmPane);
 		return inputPane;
 	}
@@ -115,7 +140,7 @@ public class CalculatorForm extends FormLayout {
 
 	private void slide() {
 		int kilometer = kmSlider.getValue().intValue();
-		calculationModel.setKilometer(""+kilometer);
+		calculationModel.setKilometer("" + kilometer);
 
 		String tariffName = calculationService.getTariffName(kilometer);
 		calculationModel.setTariff(tariffName);
@@ -125,8 +150,7 @@ public class CalculatorForm extends FormLayout {
 		BigDecimal costCarsharingBd = new BigDecimal(costCarsharing).setScale(2, RoundingMode.HALF_UP);
 		calculationModel.setCostCarsharing(beautifyCurrency(costCarsharingBd.toPlainString()));
 
-		float costOwnCar = calculationService.yearlyCostOwnCar("Renault Clio 1.2 16V 75 Start",
-				calculationModel.getKilometer());
+		float costOwnCar = calculationService.yearlyCostOwnCar(ownCar.getValue(), calculationModel.getKilometer());
 		BigDecimal costOwnCarBd = new BigDecimal(costOwnCar).setScale(2, RoundingMode.HALF_UP);
 		calculationModel.setCostOwnCar(beautifyCurrency(costOwnCarBd.toPlainString()));
 
@@ -140,7 +164,7 @@ public class CalculatorForm extends FormLayout {
 	}
 
 	private String beautifyCurrency(String amount) {
-//		String result = amount.replace(".", ",");
+		// String result = amount.replace(".", ",");
 		String result = amount.substring(0, amount.indexOf("."));
 		result += " €";
 		return result;

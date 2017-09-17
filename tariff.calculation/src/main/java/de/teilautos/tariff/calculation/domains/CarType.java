@@ -16,56 +16,20 @@
  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-package de.teilautos.tariff.calculation.ui;
+package de.teilautos.tariff.calculation.domains;
 
-import de.teilautos.tariff.calculation.domains.CarType;
+public enum CarType {
 
-public class CalculationModel {
+	KLEINSTWAGEN("Kleinstwagen (z.B. VW up!)"), KOMPAKTKLASSE("Kompaktklasse (z.B. Polo)"), MITTELKLASSE(
+			"Mittelklasse (z.B. Golf)"), GEHOBENE_KLASSE("Gehobene Klasse (z.B. Passat)");
 
-	private String kilometer = "0";
-	private String ownCarName = CarType.KLEINSTWAGEN.getName();
-	private String tariff;
-	private String costCarsharing;
-	private String costOwnCar;
+	private String name;
 
-	public String getKilometer() {
-		return kilometer;
+	private CarType(String name) {
+		this.name = name;
 	}
-
-	public void setKilometer(String kilometer) {
-		this.kilometer = kilometer;
+	
+	public String getName() {
+		return name;
 	}
-
-	public String getOwnCarName() {
-		return ownCarName;
-	}
-
-	public void setOwnCarName(String ownCarName) {
-		this.ownCarName = ownCarName;
-	}
-
-	public String getTariff() {
-		return tariff;
-	}
-
-	public void setTariff(String tariff) {
-		this.tariff = tariff;
-	}
-
-	public String getCostCarsharing() {
-		return costCarsharing;
-	}
-
-	public void setCostCarsharing(String costCarsharing) {
-		this.costCarsharing = costCarsharing;
-	}
-
-	public String getCostOwnCar() {
-		return costOwnCar;
-	}
-
-	public void setCostOwnCar(String costOwnCar) {
-		this.costOwnCar = costOwnCar;
-	}
-
 }

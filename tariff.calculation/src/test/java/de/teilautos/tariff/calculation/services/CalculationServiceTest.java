@@ -55,7 +55,7 @@ public class CalculationServiceTest {
 
 	@Test
 	public void hourlyRatesPerYear() {
-		float rate = calculationService.hourlyRatesPerYear(1000, 7.5f, 1.70f);
+		double rate = calculationService.hourlyRatesPerYear(1000, 7.5f, 1.70f);
 		assertEquals(226.67f, rate, 0.01);
 	}
 
@@ -80,7 +80,7 @@ public class CalculationServiceTest {
 	@Test
 	public void yearlyCostCarsharing() {
 		Price price = calculationService.getPrice("Normal");
-		float cost = calculationService.yearlyCostCarsharing(1000, price, 7.5f);
+		double cost = calculationService.yearlyCostCarsharing(1000, price, 7.5);
 		assertEquals(616.66, cost, 0.01);
 	}
 

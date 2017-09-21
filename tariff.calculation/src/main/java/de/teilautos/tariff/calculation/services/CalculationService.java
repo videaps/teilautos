@@ -70,12 +70,12 @@ public class CalculationService {
 	 * @param kilometerPerHour
 	 * @return
 	 */
-	public float yearlyCostCarsharing(Integer kilometerPerYear, Price price, Float kilometerPerHour) {
+	public double yearlyCostCarsharing(Integer kilometerPerYear, Price price, Double kilometerPerHour) {
 		float yearlyContribution = yearlyContribution(price.getMonthlyRate());
-		float hourlyRatesPerYear = hourlyRatesPerYear(kilometerPerYear, kilometerPerHour, price.getHourlyRate());
+		double hourlyRatesPerYear = hourlyRatesPerYear(kilometerPerYear, kilometerPerHour, price.getHourlyRate());
 		float kilometerPricesPerYear = kilometerPricesPerYear(kilometerPerYear, price.getKilometerPrice());
 		
-		float yearlyCost = yearlyContribution + hourlyRatesPerYear + kilometerPricesPerYear;
+		double yearlyCost = yearlyContribution + hourlyRatesPerYear + kilometerPricesPerYear;
 		
 		return yearlyCost;
 	}
@@ -96,8 +96,8 @@ public class CalculationService {
 	 * @param hourlyRate
 	 * @return
 	 */
-	public float hourlyRatesPerYear(Integer kilometerPerYear, Float kilometerPerHour, Float hourlyRate) {
-		float rateYear = ( kilometerPerYear / kilometerPerHour ) * hourlyRate;
+	public double hourlyRatesPerYear(Integer kilometerPerYear, double kilometerPerHour, Float hourlyRate) {
+		double rateYear = ( kilometerPerYear / kilometerPerHour ) * hourlyRate;
 		return rateYear;
 	}
 

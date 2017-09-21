@@ -18,18 +18,16 @@
 */
 package de.teilautos.tariff.calculation.ui;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
-import com.vaadin.data.Binder;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Slider;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import de.teilautos.tariff.calculation.domains.CarType;
@@ -38,152 +36,158 @@ import de.teilautos.tariff.calculation.domains.Price;
 import de.teilautos.tariff.calculation.services.CalculationService;
 
 public class CalculatorForm extends FormLayout {
-	private static final Float KILOMETER_PRO_STUNDE = 7.5f;
-
 	private static final long serialVersionUID = -7407551502394414191L;
 
-	private Binder<CalculationModel> binder = new Binder<>(CalculationModel.class);
-
-	private Label kmLabel = new Label("Gefahrene Kilometer pro Jahr");
-	private TextField kilometer = new TextField();
-	private Label kmUnitLabel = new Label(" km");
-	private Slider kmSlider = new Slider(0, 15000);
-
-	private TextField tariff = new TextField();
-	private TextField costCarsharing = new TextField();
-	private TextField costOwnCar = new TextField();
-	private NativeSelect<String> ownCar = new NativeSelect<>("Mein Auto");
-
-	private TextField valueLossCarsharing = new TextField();
-	private TextField fixCostCarsharing = new TextField();
-	private TextField garageCostCarsharing = new TextField();
-	private TextField operationsCostCarsharing = new TextField();
-
-	private Label valueLossLabel = new Label("Wertverlust");
-	private Label fixCostLabel = new Label("Fixkosten");
-	private Label garageCostLabel = new Label("Werkstatt");
-	private Label operationsCostLabel = new Label("Fahrten");
-
-	private TextField valueLossOwnCar = new TextField();
-	private TextField fixCostOwnCar = new TextField();
-	private TextField garageCostOwnCar = new TextField();
-	private TextField operationsCostOwnCar = new TextField();
-
-	private CalculationService calculationService = new CalculationService();
-	private CalculationModel calculationModel = new CalculationModel();
 	@SuppressWarnings("unused")
 	private CalculatorUI ui;
 
+	private static final Double KILOMETER_PRO_STUNDE = 7.5;
+	private static final String INIT_KILOMETER_PER_YEAR = "1000";
+
+	private ResourceBundle bundle = ResourceBundle.getBundle("calculator");
+
+	private Label kmLabel = new Label();
+	private Slider kmSlider = new Slider(0, 15000);
+	private Label ownCarLabel = new Label();
+	private NativeSelect<String> ownCarSelect = new NativeSelect<>();
+
+	private Label costLabel = new Label();
+	private Label costCarsharingLabel = new Label();
+	private Label costSavingsLabel = new Label();
+	private Label costOwnCarLabel = new Label();
+	private Label costCarsharingValue = new Label();
+	private Label costSavingsValue = new Label();
+	private Label costOwnCarValue = new Label();
+	// TODO OHO Image to visualize cost and savings.
+
+	private Label tariffRecommendedLabel = new Label();
+	private Label tariffRecommendedValue = new Label();
+
+	private Label detailsLabel = new Label();
+	private Label valueLossLabel = new Label();
+	private Label fixCostLabel = new Label();
+	private Label garageCostLabel = new Label();
+	private Label operationsCostLabel = new Label();
+
+	private Label valueLossCarsharingValue = new Label();
+	private Label valueLossOwnCarValue = new Label();
+	private Label fixCostCarsharingValue = new Label();
+	private Label fixCostOwnCarValue = new Label();
+	private Label garageCostCarsharingValue = new Label();
+	private Label garageCostOwnCarValue = new Label();
+	private Label operationsCostCarsharingValue = new Label();
+	private Label operationsCostOwnCarValue = new Label();
+
+	private CalculationService calculationService = new CalculationService();
+
 	public CalculatorForm(CalculatorUI tariffCalculatorUI) {
 		this.ui = tariffCalculatorUI;
-		binder.bindInstanceFields(this);
 
-		VerticalLayout inputPane = renderInputPane();
-		updateInputPane();
+		VerticalLayout inputForm = initInputPane();
+		VerticalLayout resultForm = initResultPane();
+		VerticalLayout detailsForm = initDetailsPane();
 
-		HorizontalLayout resultPane = new HorizontalLayout(tariff, costCarsharing, costOwnCar);
-		updateResultPane();
-
-		VerticalLayout detailPane = renderDetailPane();
-		updateDetialPane();
+		update();
 
 		setSizeUndefined();
-		addComponents(inputPane, resultPane, detailPane);
+		addComponents(inputForm, resultForm, detailsForm);
 	}
 
-	private VerticalLayout renderInputPane() {
-		kilometer.setWidth("100px");
-		kilometer.setEnabled(false);
+	private VerticalLayout initInputPane() {
+		kmLabel.setValue(MessageFormat.format(bundle.getString("kilometer_per_year"), INIT_KILOMETER_PER_YEAR));
 
 		kmSlider.setWidth("500px");
-		kmSlider.addValueChangeListener(e -> this.update());
+		kmSlider.setValue(Double.valueOf(INIT_KILOMETER_PER_YEAR));
+		kmSlider.addValueChangeListener(e -> this.onChange());
 
-		ownCar.setEmptySelectionAllowed(false);
-		ownCar.setItems(allCarTypeNames());
-		ownCar.setSelectedItem(CarType.KLEINSTWAGEN.getName());
-		ownCar.addValueChangeListener(e -> this.update());
+		ownCarLabel.setValue(bundle.getString("my_car"));
+		ownCarSelect.setItems(allCarTypeNames());
+		ownCarSelect.setEmptySelectionAllowed(false);
+		ownCarSelect.setSelectedItem(CarType.KLEINSTWAGEN.getName());
+		ownCarSelect.addValueChangeListener(e -> this.onChange());
 
-		HorizontalLayout kmPane = new HorizontalLayout(kilometer, kmUnitLabel, kmSlider, ownCar);
-		VerticalLayout inputPane = new VerticalLayout(kmLabel, kmPane);
+		HorizontalLayout ownCarPane = new HorizontalLayout(ownCarLabel, ownCarSelect);
+
+		VerticalLayout inputPane = new VerticalLayout(kmSlider, kmLabel, ownCarPane);
 		return inputPane;
 	}
 
-	private VerticalLayout renderDetailPane() {
-		HorizontalLayout valueLossPane = new HorizontalLayout(valueLossCarsharing, valueLossLabel, valueLossOwnCar);
-		HorizontalLayout fixCostPane = new HorizontalLayout(fixCostCarsharing, fixCostLabel, fixCostOwnCar);
-		HorizontalLayout garageCostPane = new HorizontalLayout(garageCostCarsharing, garageCostLabel, garageCostOwnCar);
-		HorizontalLayout operationsCostPane = new HorizontalLayout(operationsCostCarsharing, operationsCostLabel,
-				operationsCostOwnCar);
+	private VerticalLayout initResultPane() {
+		costLabel.setValue(bundle.getString("mobility_cost"));
 
-		VerticalLayout detailPane = new VerticalLayout(valueLossPane, fixCostPane, garageCostPane, operationsCostPane);
-		return detailPane;
+		costCarsharingLabel.setValue(bundle.getString("cost_carsharing"));
+		costSavingsLabel.setValue(bundle.getString("cost_savings"));
+		costOwnCarLabel.setValue(bundle.getString("cost_own_car"));
+		HorizontalLayout labelPane = new HorizontalLayout(costCarsharingLabel, costSavingsLabel, costOwnCarLabel);
+
+		HorizontalLayout valuePane = new HorizontalLayout(costCarsharingValue, costSavingsValue, costOwnCarValue);
+
+		// TODO OHO Add visual image to show savings here.
+
+		tariffRecommendedLabel.setValue(bundle.getString("tariff_recommended"));
+		HorizontalLayout tariffPane = new HorizontalLayout(tariffRecommendedLabel, tariffRecommendedValue);
+
+		VerticalLayout resultPane = new VerticalLayout(costLabel, labelPane, valuePane, tariffPane);
+		return resultPane;
 	}
 
-	private void updateDetialPane() {
-		Price price = calculationService.getPrice(calculationModel.getTariff());
+	private VerticalLayout initDetailsPane() {
+		detailsLabel.setValue(bundle.getString("cost_details"));
 
-		calculationModel.setValueLossCarsharing(beautifyCurrency("0.00"));
-		valueLossCarsharing.setValue(calculationModel.getValueLossCarsharing());
+		fixCostLabel.setValue(bundle.getString("cost_fix"));
+		garageCostLabel.setValue(bundle.getString("cost_garage"));
+		operationsCostLabel.setValue(bundle.getString("cost_operation"));
 
-		calculationModel.setFixCostCarsharing(
-				beautifyCurrency("" + calculationService.yearlyContribution(price.getMonthlyRate())));
-		fixCostCarsharing.setValue(calculationModel.getFixCostCarsharing());
+		valueLossLabel.setValue(bundle.getString("cost_value_loss"));
+		HorizontalLayout valueLossPane = new HorizontalLayout(valueLossCarsharingValue, valueLossLabel,
+				valueLossOwnCarValue);
+		HorizontalLayout fixCostPane = new HorizontalLayout(fixCostCarsharingValue, fixCostLabel, fixCostOwnCarValue);
+		HorizontalLayout garageCostPane = new HorizontalLayout(garageCostCarsharingValue, garageCostLabel,
+				garageCostOwnCarValue);
+		HorizontalLayout operationsCostPane = new HorizontalLayout(operationsCostCarsharingValue, operationsCostLabel,
+				operationsCostOwnCarValue);
+		VerticalLayout pane = new VerticalLayout(detailsLabel, valueLossPane, fixCostPane, garageCostPane,
+				operationsCostPane);
 
-		calculationModel.setGarageCostCarsharing(beautifyCurrency("0.00"));
-		garageCostCarsharing.setValue(calculationModel.getGarageCostCarsharing());
-
-		float hourlyRatesPerYear = calculationService.hourlyRatesPerYear(
-				Integer.valueOf(calculationModel.getKilometer()), KILOMETER_PRO_STUNDE, price.getHourlyRate());
-		float kilometerPricesPerYear = calculationService
-				.kilometerPricesPerYear(Integer.valueOf(calculationModel.getKilometer()), price.getKilometerPrice());
-		calculationModel.setOperationsCostCarsharing(beautifyCurrency("" + (hourlyRatesPerYear + kilometerPricesPerYear)));
-		operationsCostCarsharing.setValue(calculationModel.getOperationsCostCarsharing());
-
-		DetailCarCost detailCarCostOwnCar = calculationService.yearlyDetailCostOwnCar(ownCar.getValue(),
-				Integer.valueOf(calculationModel.getKilometer()));
-
-		calculationModel.setValueLossOwnCar(beautifyCurrency(detailCarCostOwnCar.getValueLossAsString()));
-		valueLossOwnCar.setValue(calculationModel.getValueLossOwnCar());
-
-		calculationModel.setFixCostOwnCar(beautifyCurrency(detailCarCostOwnCar.getFixCostAsString()));
-		fixCostOwnCar.setValue(calculationModel.getFixCostOwnCar());
-
-		calculationModel.setGarageCostOwnCar(beautifyCurrency(detailCarCostOwnCar.getGarageCostAsString()));
-		garageCostOwnCar.setValue(calculationModel.getGarageCostOwnCar());
-
-		calculationModel.setOperationsCostOwnCar(beautifyCurrency(detailCarCostOwnCar.getOperationsCostAsString()));
-		operationsCostOwnCar.setValue(calculationModel.getOperationsCostOwnCar());
+		return pane;
 	}
 
-	private void updateResultPane() {
-		Integer kilometer = kmSlider.getValue().intValue();
-		calculationModel.setKilometer("" + kilometer);
-
-		String tariffName = calculationService.getTariffName(kilometer);
-		calculationModel.setTariff(tariffName);
-
-		tariff.setCaption("Tarifempfehlung");
-		tariff.setValue(calculationModel.getTariff());
-		tariff.setEnabled(false);
-
-		// Carsharing Cost
+	private void update() {
+		Double km = kmSlider.getValue();
+		String tariffName = calculationService.getTariffName(km.intValue());
 		Price price = calculationService.getPrice(tariffName);
-		float cost = calculationService.yearlyCostCarsharing(kilometer, price, KILOMETER_PRO_STUNDE);
-		BigDecimal costCarsharingBd = new BigDecimal(cost).setScale(2, RoundingMode.HALF_UP);
-		calculationModel.setCostCarsharing(costCarsharingBd.toPlainString());
+		String carTypeName = ownCarSelect.getValue();
 
-		costCarsharing.setCaption("Carsharing");
-		costCarsharing.setValue(beautifyCurrency(calculationModel.getCostCarsharing()));
-		costCarsharing.setEnabled(false);
+		double yearlyCostCarsharing = calculationService.yearlyCostCarsharing(km.intValue(), price,
+				KILOMETER_PRO_STUNDE);
+		costCarsharingValue.setValue(Beautifier.euros(yearlyCostCarsharing));
 
-		// Own Car Cost
-		float costOwnCarFloat = calculationService.yearlyTotalCostOwnCar(CarType.KLEINSTWAGEN.getName(), kilometer);
-		BigDecimal costOwnCarBd = new BigDecimal(costOwnCarFloat).setScale(2, RoundingMode.HALF_UP);
-		calculationModel.setCostOwnCar(costOwnCarBd.toPlainString());
+		double yearlyCostOwnCar = calculationService.yearlyTotalCostOwnCar(carTypeName, km.intValue());
+		costOwnCarValue.setValue(Beautifier.euros(yearlyCostOwnCar));
 
-		costOwnCar.setCaption("Eigenes Auto");
-		costOwnCar.setValue(beautifyCurrency(calculationModel.getCostOwnCar()));
-		costOwnCar.setEnabled(false);
+		double yearlySavings = yearlyCostOwnCar - yearlyCostCarsharing;
+		costSavingsValue.setValue(Beautifier.euros(yearlySavings));
+
+		tariffRecommendedValue.setValue(tariffName);
+
+		DetailCarCost carCostOwnCar = calculationService.yearlyDetailCostOwnCar(ownCarSelect.getValue(), km.intValue());
+
+		valueLossCarsharingValue.setValue(Beautifier.euros(0.0));
+		valueLossOwnCarValue.setValue(Beautifier.euros(carCostOwnCar.getValueLoss()));
+		
+		double yearlyContribution = calculationService.yearlyContribution(price.getMonthlyRate());
+		fixCostCarsharingValue.setValue(Beautifier.euros(yearlyContribution));
+		fixCostOwnCarValue.setValue(Beautifier.euros(carCostOwnCar.getFixCost()));
+		
+		garageCostCarsharingValue.setValue(Beautifier.euros(0.0));
+		garageCostOwnCarValue.setValue(Beautifier.euros(carCostOwnCar.getGarageCost()));
+		
+		double hourlyRatesPerYear = calculationService.hourlyRatesPerYear(km.intValue(), KILOMETER_PRO_STUNDE, price.getHourlyRate());
+		double kilometerPricesPerYear = calculationService
+				.kilometerPricesPerYear(km.intValue(), price.getKilometerPrice());
+		double operationsCostCarsharing = hourlyRatesPerYear + kilometerPricesPerYear;
+		operationsCostCarsharingValue.setValue(Beautifier.euros(operationsCostCarsharing));
+		operationsCostOwnCarValue.setValue(Beautifier.euros(carCostOwnCar.getOperationsCost()));
 	}
 
 	private List<String> allCarTypeNames() {
@@ -195,33 +199,13 @@ public class CalculatorForm extends FormLayout {
 		return names;
 	}
 
-	private void updateInputPane() {
-		kilometer.setValue(String.valueOf(calculationModel.getKilometer()));
+	private void onChange() {
+		Double kmValue = kmSlider.getValue();
+		String kmStr = Beautifier.kilometer(kmValue);
+		String label = MessageFormat.format(bundle.getString("kilometer_per_year"), kmStr);
+		kmLabel.setValue(label);
 
-		kmSlider.setValue(Double.valueOf(calculationModel.getKilometer()));
+		update();
 	}
 
-	private void setCalculation(CalculationModel calculation) {
-		this.calculationModel = calculation;
-		binder.setBean(calculation);
-	}
-
-	private void update() {
-		updateResultPane();
-		updateDetialPane();
-
-		setCalculation(calculationModel);
-	}
-
-	@SuppressWarnings("unused")
-	private String beautifyKilometer(String km) {
-		String result = km + " km";
-		return result;
-	}
-
-	private String beautifyCurrency(String amount) {
-		String result = amount.substring(0, amount.indexOf("."));
-		result += " €";
-		return result;
-	}
 }

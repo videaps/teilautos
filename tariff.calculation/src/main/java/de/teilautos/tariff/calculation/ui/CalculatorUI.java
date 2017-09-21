@@ -40,4 +40,5 @@ public class CalculatorUI extends UI {
     public static class TariffCalculatorUIServlet extends VaadinServlet {
 		private static final long serialVersionUID = 582364703069431124L;
     }
+    
 }

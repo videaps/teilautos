@@ -21,6 +21,8 @@ package de.teilautos.tariff.calculation.ui;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class Beautifier {
 
 	public static String kilometer(Double value) {
@@ -35,4 +37,14 @@ public class Beautifier {
 		return result;
 	}
 	
+	public static String padKilometer(String kilometer, String maxKilometer) {
+		int size = maxKilometer.length();
+		String result = StringUtils.leftPad(kilometer, size, " ");
+		return result;
+	}
+
+	public static String kilometerUnit(String kilometer) {
+		String result = kilometer + " km";
+		return result;
+	}
 }

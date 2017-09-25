@@ -25,10 +25,23 @@ import org.junit.Test;
 public class BeautifierTest {
 
 	@Test
-	public void test() {
+	public void kilometer() {
 		Double double1 = new Double("1430.453534");
 		String value = Beautifier.kilometer(double1);
 		assertEquals("1430", value);
+	}
+	
+	@Test
+	public void padKilometer() {
+		String maxValue = "10000";
+		
+		String result = Beautifier.padKilometer("10000", maxValue);
+		assertEquals("10000", result);
+
+		assertEquals(" 9500", Beautifier.padKilometer("9500", maxValue));
+		assertEquals(" 1000", Beautifier.padKilometer("1000", maxValue));
+		assertEquals("  999", Beautifier.padKilometer("999", maxValue));
+		assertEquals("    0", Beautifier.padKilometer("0", maxValue));
 	}
 
 }

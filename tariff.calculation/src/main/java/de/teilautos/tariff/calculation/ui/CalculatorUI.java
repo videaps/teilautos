@@ -10,6 +10,8 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.GridLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.NativeSelect;
@@ -40,6 +42,7 @@ public class CalculatorUI extends UI {
 	private static final String INIT_KILOMETER_PER_YEAR = "1000";
 	private static final Integer MAX_KILOMETER_PER_YEAR = 10000;
 
+	private static final String WIDTH_PANE = "680px";
 	private static final String WIDTH_SLIDER = "220";
 	private static final String WIDTH_TEXT_FIELD = "120px";
 	private static final String WIDTH_SELECT = "320px";
@@ -51,9 +54,9 @@ public class CalculatorUI extends UI {
 	private TextField kmText = new TextField(" ", Beautifier.kilometerUnit(INIT_KILOMETER_PER_YEAR));
 	private NativeSelect<String> ownCarSelect = new NativeSelect<>(bundle.getString("my_car"));
 
-	private TextField costCarsharing = new TextField(bundle.getString("cost_carsharing"));
-	private TextField costSavings = new TextField(bundle.getString("cost_savings"));
-	private TextField costOwnCar = new TextField(bundle.getString("cost_own_car"));
+	private Label costCarsharing = new Label(bundle.getString("cost_carsharing"));
+	private Label costSavings = new Label(bundle.getString("cost_savings"));
+	private Label costOwnCar = new Label(bundle.getString("cost_own_car"));
 
 	private Label tariffRecommended = new Label();
 
@@ -87,7 +90,7 @@ public class CalculatorUI extends UI {
 
 		root.addComponent(new HorizontalLayout());
 
-		HorizontalLayout resultLayout = initCostPane();
+		GridLayout resultLayout = initCostPane();
 		root.addComponent(resultLayout);
 
 		VerticalLayout detailsLayout = initDetailsPane();
@@ -99,17 +102,39 @@ public class CalculatorUI extends UI {
 		setContent(root);
 	}
 
-	private HorizontalLayout initCostPane() {
-		costCarsharing.setWidth(WIDTH_COST_FIELD);
-		costCarsharing.setEnabled(false);
+	private GridLayout initCostPane() {
+		GridLayout costLayout = new GridLayout(3, 2);
+		costLayout.setWidth(WIDTH_PANE);
+		costLayout.setCaption(bundle.getString("mobility_cost"));
 		
-		costSavings.setWidth(WIDTH_COST_FIELD);
-		costSavings.setEnabled(false);
+		Label carsharingHeader = new Label(bundle.getString("cost_carsharing"));
+		carsharingHeader.setStyleName("grid-header");
+		costLayout.addComponent(carsharingHeader, 0, 0);
+		costLayout.setComponentAlignment(carsharingHeader, Alignment.MIDDLE_CENTER);
+		
+		Label savingsHeader = new Label(bundle.getString("cost_savings"));
+		savingsHeader.setStyleName("grid-header");
+		costLayout.addComponent(savingsHeader, 1, 0);
+		costLayout.setComponentAlignment(savingsHeader, Alignment.MIDDLE_CENTER);
 
-		costOwnCar.setWidth(WIDTH_COST_FIELD);
-		costOwnCar.setEnabled(false);
-		HorizontalLayout resultLayout = new HorizontalLayout(costCarsharing, costSavings, costOwnCar);
-		return resultLayout;
+		Label ownCarHeader = new Label(bundle.getString("cost_own_car"));
+		ownCarHeader.setStyleName("grid-header");
+		costLayout.addComponent(ownCarHeader, 2, 0);
+		costLayout.setComponentAlignment(ownCarHeader, Alignment.MIDDLE_CENTER);
+
+		costCarsharing.setStyleName("grid-cell");
+		costLayout.addComponent(costCarsharing, 0, 1);
+		costLayout.setComponentAlignment(costCarsharing, Alignment.MIDDLE_CENTER);
+		
+		costSavings.setStyleName("grid-cell");
+		costLayout.addComponent(costSavings, 1, 1);
+		costLayout.setComponentAlignment(costSavings, Alignment.MIDDLE_CENTER);
+
+		costOwnCar.setStyleName("grid-cell");
+		costLayout.addComponent(costOwnCar, 2, 1);
+		costLayout.setComponentAlignment(costOwnCar, Alignment.MIDDLE_CENTER);
+		
+		return costLayout;
 	}
 
 	private HorizontalLayout initTariffPane() {

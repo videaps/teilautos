@@ -36,6 +36,11 @@ $v-focus-color: #BE1622;
   @include valo;
 
   // Teilautos theme rules here
+
+  .v-caption .v-captiontext {
+    color: #3C3C3B;
+  }
+
   .v-slider {
   }
   .v-slider-base:before, .v-slider-base:after {
@@ -56,12 +61,28 @@ $v-focus-color: #BE1622;
   }
 
   .v-textfield-kilometer {
+    color: #3C3C3B;
     text-align: right;
   }
  
   .v-select {
   }
  
+  .v-label {
+  	color: #3C3C3B;
+  }
+ 
+  .v-label-grid-header {
+  	color: #3C3C3B;
+  	font-size: 24px;
+  	font-weight: 600;
+  }
+  .v-label-grid-cell {
+  	color: #3C3C3B;
+  	font-size: 24px;
+  	font-weight: 300;
+  }
+   
   .v-label-tariff {
   	font-size: 24px;
   	font-weight: 600;
@@ -73,4 +94,8 @@ $v-focus-color: #BE1622;
  	color: #BE1622;
   }
  
+  .v-gridlayout {
+    border: 1px solid #d3d3d3;
+  }
+
 }

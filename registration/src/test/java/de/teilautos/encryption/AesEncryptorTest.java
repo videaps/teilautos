@@ -30,7 +30,7 @@ public class AesEncryptorTest {
 
 	@Test
     public void main() throws IOException {
-    	String password = "<PUT PASSWORD HERE>";
+    	String password = "rMGq2iWWusfih00xT3gt";
 		String secretKey = new UserHomeReader().readSecretKey("teilautos-registrierung-secret.key");
     	String encryptedPassword = AesEncrypter.encrypt(password, secretKey);
     	System.out.println(encryptedPassword);

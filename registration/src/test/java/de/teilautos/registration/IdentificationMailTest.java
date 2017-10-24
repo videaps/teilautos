@@ -33,6 +33,8 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
+import de.teilautos.registration.check.RegistrationModel;
+
 @Deployment(resources = { "identification-mail.bpmn", "registration-mail-verification.dmn" })
 public class IdentificationMailTest {
 
@@ -52,7 +54,7 @@ public class IdentificationMailTest {
 		String subject = "Nachricht über https://www.teilautos.de/registrieren/";
 		String content = "Hallo,\n\n du hast eine Nachricht über deine Jimdo-Seite https://www.teilautos.de/registrieren/ erhalten:\n\n -------------------------------------\n\n Vorname: Oliver Ludger\n\n Nachname: Hock\n\n E-Mail: oliver.hock@gmail.com\n\n E-Mail (Wiederholung): oliver.hock@gmail.com\n\n Adresse (Straße, Nr., PLZ, Ort): Bergstraße 12\n 59269 Beckum\n\n Telefon / Handy: 0176 29499727\n\n Zum Newsletter anmelden (auf dem Laufenden bleiben): Ja\n\n Partnerprogramm: Abo RVM (mit Kundennummer)\n\n Kundennummer: 13081971\n\n Ich akzeptiere die Allgemeinen Geschäftsbedingungen (diese stehen unten am Ende dieser Seite): Ja\n\n Ich stimme der Datenschutzerklärung zu (diese stehen unten am Ende dieser Seite): Ja";
 
-		RegistrationMailModel model = new RegistrationMailModel(subject, content);
+		RegistrationModel model = new RegistrationModel(subject, content);
 
 		VariableMap variables = Variables.createVariables().putValue("host", "secure.emailsrvr.com")
 				.putValue("username", "oliver.hock@teilautos.de").putValue("password", "czChrwk6!")

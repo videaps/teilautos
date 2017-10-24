@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.8.1">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.10.0">
   <bpmn:collaboration id="Collaboration_Registration">
     <bpmn:participant id="Participant_RegistrationCheck" name="Registration Check" processRef="Process_RegistrationCheck" />
   </bpmn:collaboration>
@@ -31,9 +31,9 @@
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_16gv8jb</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1c1b4c2</bpmn:outgoing>
-      <bpmn:multiInstanceLoopCharacteristics isSequential="true" camunda:collection="registrationMailModels" camunda:elementVariable="registrationMail" />
+      <bpmn:multiInstanceLoopCharacteristics isSequential="true" camunda:collection="emailModels" camunda:elementVariable="registrationMail" />
     </bpmn:callActivity>
-    <bpmn:serviceTask id="Task_CheckInbox" name="Check Inbox" camunda:class="de.teilautos.registration.MailCheckerDelegate">
+    <bpmn:serviceTask id="Task_CheckInbox" name="Check Inbox" camunda:class="de.teilautos.registration.check.RegistrationCheckDelegate">
       <bpmn:extensionElements>
         <camunda:field name="host">        <camunda:expression>${ host }</camunda:expression>
 </camunda:field>

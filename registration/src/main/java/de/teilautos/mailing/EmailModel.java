@@ -16,39 +16,35 @@
  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-package de.teilautos.encryption;
+package de.teilautos.mailing;
 
-import static org.junit.Assert.*;
+public class EmailModel {
 
-import java.io.IOException;
+	private String subject;
+	private String content;
 
-import org.junit.Test;
-
-import de.teilautos.io.UserHomeReader;
-
-public class AesEncryptorTest {
-
-	@Test
-    public void main() throws IOException {
-    	String password = "";
-		String secretKey = new UserHomeReader().readSecretKey("teilautos-registrierung-secret.key");
-    	String encryptedPassword = AesEncrypter.encrypt(password, secretKey);
-    	System.out.println(encryptedPassword);
-    }
-    
-    
-
-	@Test
-	public void enryptDecrypt() throws IOException {
-		final String secretKey = new UserHomeReader().readSecretKey("teilautos-registrierung-secret.key");
-
-		String originalString = "Oliver";
-		
-		String encryptedString = AesEncrypter.encrypt(originalString, secretKey);
-		assertEquals("RE/oWlnAciHM9ixZwbOv4g==", encryptedString);
-		
-		String decryptedString = AesEncrypter.decrypt(encryptedString, secretKey);
-		assertEquals("Oliver", decryptedString);
+	public EmailModel(String subject, String content) {
+		super();
+		this.subject = subject;
+		this.content = content;
 	}
 
+	@Override
+	public String toString() {
+		return "EmailModel [subject=" + subject + ", content=" + content + "]";
+	}
+
+
+	public String getSubject() {
+		return subject;
+	}
+
+	public void setSubject(String subject) {
+		this.subject = subject;
+	}
+
+	public String getContent() {
+		return content;
+	}
+	
 }

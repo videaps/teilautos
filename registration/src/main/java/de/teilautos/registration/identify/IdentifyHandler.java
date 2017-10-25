@@ -16,31 +16,27 @@
  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-package de.teilautos.mailing;
-
-import static org.junit.Assert.*;
+package de.teilautos.registration.identify;
 
 import java.io.IOException;
-
-import org.junit.Test;
+import java.text.MessageFormat;
 
 import de.teilautos.io.FileReader;
 
-public class FileReaderTest {
+public class IdentifyHandler {
 
-	@Test
-	public void subject() throws IOException {
-		FileReader fileReader = new FileReader();
-		String fileContent = fileReader.readFile("identification-mail-subject.txt");
-		assertEquals("Deine Identifizierung für \"Teilautos - Das regionale Carsharing\"", fileContent);
+	private FileReader fileReader = new FileReader();
+	private MessageFormat messageContent;
+	
+	public IdentifyHandler() throws IOException {
+		String fileContent = fileReader.readFile("identification-mail.txt");
+		messageContent = new MessageFormat(fileContent);
+	}
+
+	public String createContent(String firstname, String lastname, String username) {
+		String[] identifyParams = { firstname, lastname, username };
+		String content = messageContent.format(identifyParams);
+		return content;
 	}
 	
-	@Test
-	public void content() throws IOException {
-		FileReader fileReader = new FileReader();
-		String fileContent = fileReader.readFile("identification-mail-content.txt");
-		assertTrue("Deine Identifizierung für \"Teilautos - Das regionale Carsharing\"", fileContent.startsWith("Hallo und herzlich Willkommen bei Teilautos."));
-		System.out.println(fileContent);
-	}
-
 }

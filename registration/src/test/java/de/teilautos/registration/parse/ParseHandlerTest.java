@@ -16,7 +16,7 @@
  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-package de.teilautos.encryption;
+package de.teilautos.registration.parse;
 
 import static org.junit.Assert.*;
 
@@ -24,31 +24,32 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import de.teilautos.io.UserHomeReader;
+import de.teilautos.io.FileReader;
+import de.teilautos.registration.parse.ParseHandler;
+import de.teilautos.registration.parse.PartnerProgramEnum;
+import de.teilautos.registration.parse.RegistrationModel;
 
-public class AesEncryptorTest {
-
-	@Test
-    public void main() throws IOException {
-    	String password = "";
-		String secretKey = new UserHomeReader().readSecretKey("teilautos-registrierung-secret.key");
-    	String encryptedPassword = AesEncrypter.encrypt(password, secretKey);
-    	System.out.println(encryptedPassword);
-    }
-    
-    
+public class ParseHandlerTest {
 
 	@Test
-	public void enryptDecrypt() throws IOException {
-		final String secretKey = new UserHomeReader().readSecretKey("teilautos-registrierung-secret.key");
-
-		String originalString = "Oliver";
+	public void parseContent() throws IOException {
+		String content = new FileReader().readFile("registration-mail.txt");
+		ParseHandler handler = new ParseHandler();
+		RegistrationModel model = handler.parseContent(content);
 		
-		String encryptedString = AesEncrypter.encrypt(originalString, secretKey);
-		assertEquals("RE/oWlnAciHM9ixZwbOv4g==", encryptedString);
+		assertEquals("Oliver", model.getFirstname());
+		assertEquals("Hock", model.getSurname());
+		assertEquals("oliver.hock@gmail.com", model.getEmail());
+		assertEquals("Bergstr. 12", model.getStreetNo());
+		assertEquals("59269 Beckum", model.getPostCode());
+		assertEquals("0176 / 29499727", model.getPhone());
 		
-		String decryptedString = AesEncrypter.decrypt(encryptedString, secretKey);
-		assertEquals("Oliver", decryptedString);
+		assertEquals(PartnerProgramEnum.None, model.getPartnerProgram());
+		assertEquals("", model.getReference());
+		
+		assertTrue(model.isTermsAndConditionsAccepted());
+		assertTrue(model.isDataPrivacyAccepted());
+		assertFalse(model.isNewsletterWanted());
 	}
 
 }

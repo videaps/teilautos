@@ -1,0 +1,37 @@
+Hallo {0} {1}, 
+
+herzlich Willkommen bei Teilautos und vielen Dank, dass Sie sich bei uns registriert haben. 
+
+Ihr Benutzername lautet: 
+
+{2}
+
+
+So geht es weiter:
+
+1. Passwort vergeben
+Bitte vergeben Sie ein Passwort. Wir schicken Ihnen dafür in Kürze eine E-Mail mit Ihrem Benutzernamen und einem Link zur Vergabe eines Passwortes zu. 
+
+Anschließend können Sie sich mit Ihrem Benutzernamen und Passwort bei uns anmelden.
+
+2. Führerschein hochladen: http://anmeldung.teilautos-carsharing.de
+Laden Sie Foto Ihres Führerscheins hoch. Gehen Sie dafür zu: "Profil – editieren – Führerschein editieren – Datei auswählen"
+
+Im Anschluss prüfen wir den Führerschein und schicken Ihnen Ihre Zugangskarte per Post zu. Damit können Sie das Fahrzeug dann buchen, öffnen und fahren. 
+
+
+Haben Sie Fragen? Brauchen Sie Unterstützung? Dann melden Sie sich bei uns. Wir helfen gerne.
+
+
+Wir wünschen Ihnen eine gute Fahrt.
+
+Ihr Teilautos-Team
+Oliver Hock
+
+Teilautos – Das regionale Carsharing
+Bergstraße 12
+59269 Beckum
+
+Telefon: 02521 821 3314
+E-Mail: kontakt@teilautos.de
+Web: www.teilautos.de

@@ -16,39 +16,24 @@
  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-package de.teilautos.encryption;
+package de.teilautos.registration;
 
-import static org.junit.Assert.*;
+import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.delegate.JavaDelegate;
 
-import java.io.IOException;
+import de.teilautos.mailing.EmailModel;
+import de.teilautos.registration.parse.ParseHandler;
+import de.teilautos.registration.parse.RegistrationModel;
 
-import org.junit.Test;
+public class ParseRegistrationDelegate implements JavaDelegate {
 
-import de.teilautos.io.UserHomeReader;
+	public void execute(DelegateExecution execution) throws Exception {
+		EmailModel newRegistrationMail = (EmailModel) execution.getVariable("newRegistrationMail");
 
-public class AesEncryptorTest {
-
-	@Test
-    public void main() throws IOException {
-    	String password = "";
-		String secretKey = new UserHomeReader().readSecretKey("teilautos-registrierung-secret.key");
-    	String encryptedPassword = AesEncrypter.encrypt(password, secretKey);
-    	System.out.println(encryptedPassword);
-    }
-    
-    
-
-	@Test
-	public void enryptDecrypt() throws IOException {
-		final String secretKey = new UserHomeReader().readSecretKey("teilautos-registrierung-secret.key");
-
-		String originalString = "Oliver";
+		ParseHandler handler = new ParseHandler();
+		RegistrationModel model = handler.parseContent(newRegistrationMail.getContent());
 		
-		String encryptedString = AesEncrypter.encrypt(originalString, secretKey);
-		assertEquals("RE/oWlnAciHM9ixZwbOv4g==", encryptedString);
-		
-		String decryptedString = AesEncrypter.decrypt(encryptedString, secretKey);
-		assertEquals("Oliver", decryptedString);
+		execution.setVariable("registrationModel", model);
 	}
 
 }

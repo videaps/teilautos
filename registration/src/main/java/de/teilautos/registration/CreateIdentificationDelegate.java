@@ -16,39 +16,30 @@
  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-package de.teilautos.encryption;
+package de.teilautos.registration;
 
-import static org.junit.Assert.*;
+import org.camunda.bpm.engine.delegate.DelegateExecution;
+import org.camunda.bpm.engine.delegate.JavaDelegate;
 
-import java.io.IOException;
+import de.teilautos.mailing.EmailModel;
+import de.teilautos.registration.identify.IdentifyHandler;
+import de.teilautos.registration.parse.RegistrationModel;
 
-import org.junit.Test;
+public class CreateIdentificationDelegate implements JavaDelegate {
 
-import de.teilautos.io.UserHomeReader;
+	public void execute(DelegateExecution execution) throws Exception {
+		RegistrationModel registrationModel = (RegistrationModel) execution.getVariable("registrationModel");
 
-public class AesEncryptorTest {
-
-	@Test
-    public void main() throws IOException {
-    	String password = "";
-		String secretKey = new UserHomeReader().readSecretKey("teilautos-registrierung-secret.key");
-    	String encryptedPassword = AesEncrypter.encrypt(password, secretKey);
-    	System.out.println(encryptedPassword);
-    }
-    
-    
-
-	@Test
-	public void enryptDecrypt() throws IOException {
-		final String secretKey = new UserHomeReader().readSecretKey("teilautos-registrierung-secret.key");
-
-		String originalString = "Oliver";
+		IdentifyHandler handler = new IdentifyHandler();
+		String firstname = registrationModel.getFirstname();
+		String surname = registrationModel.getSurname();
+		String username = firstname.toLowerCase() + "." + surname.toLowerCase();
+		String content = handler.createContent(firstname, surname, username);
 		
-		String encryptedString = AesEncrypter.encrypt(originalString, secretKey);
-		assertEquals("RE/oWlnAciHM9ixZwbOv4g==", encryptedString);
+		String subject = "Ihre Registrierung bei \"Teilautos - Das regionale Carsharing\"";
+		EmailModel identificationMail = new EmailModel(subject, content);
 		
-		String decryptedString = AesEncrypter.decrypt(encryptedString, secretKey);
-		assertEquals("Oliver", decryptedString);
+		execution.setVariable("identificationMail", identificationMail);
 	}
 
 }

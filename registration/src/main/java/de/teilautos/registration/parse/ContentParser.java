@@ -16,39 +16,25 @@
  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-package de.teilautos.encryption;
+package de.teilautos.registration.parse;
 
-import static org.junit.Assert.*;
+public class ContentParser {
 
-import java.io.IOException;
+	private String content = null;
 
-import org.junit.Test;
-
-import de.teilautos.io.UserHomeReader;
-
-public class AesEncryptorTest {
-
-	@Test
-    public void main() throws IOException {
-    	String password = "";
-		String secretKey = new UserHomeReader().readSecretKey("teilautos-registrierung-secret.key");
-    	String encryptedPassword = AesEncrypter.encrypt(password, secretKey);
-    	System.out.println(encryptedPassword);
-    }
-    
-    
-
-	@Test
-	public void enryptDecrypt() throws IOException {
-		final String secretKey = new UserHomeReader().readSecretKey("teilautos-registrierung-secret.key");
-
-		String originalString = "Oliver";
-		
-		String encryptedString = AesEncrypter.encrypt(originalString, secretKey);
-		assertEquals("RE/oWlnAciHM9ixZwbOv4g==", encryptedString);
-		
-		String decryptedString = AesEncrypter.decrypt(encryptedString, secretKey);
-		assertEquals("Oliver", decryptedString);
+	public ContentParser(String content) {
+		content += "\n";
+		this.content = content;
 	}
 
+	public String find(String key) {
+		key += ":";
+		int startIndex = content.indexOf(key);
+		String sub = content.substring(startIndex);
+		
+		int nextLineSeperatorIndex = sub.indexOf("\n");
+		String result = sub.substring(key.length(), nextLineSeperatorIndex).trim();
+		
+		return result;
+	}
 }

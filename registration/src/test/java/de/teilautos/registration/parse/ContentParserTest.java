@@ -16,39 +16,39 @@
  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-package de.teilautos.encryption;
+package de.teilautos.registration.parse;
 
 import static org.junit.Assert.*;
 
 import java.io.IOException;
+import java.util.ResourceBundle;
 
+import org.junit.Before;
 import org.junit.Test;
 
-import de.teilautos.io.UserHomeReader;
+import de.teilautos.io.FileReader;
+import de.teilautos.registration.parse.ContentParser;
 
-public class AesEncryptorTest {
+public class ContentParserTest {
+	private ResourceBundle bundle = ResourceBundle.getBundle("registration-mail");
+	ContentParser parser ;
+	
+	@Before
+	public void init() throws IOException {
+		String fileContent = new FileReader().readFile("registration-mail.txt");
+		parser = new ContentParser(fileContent);
+	}
 
 	@Test
-    public void main() throws IOException {
-    	String password = "";
-		String secretKey = new UserHomeReader().readSecretKey("teilautos-registrierung-secret.key");
-    	String encryptedPassword = AesEncrypter.encrypt(password, secretKey);
-    	System.out.println(encryptedPassword);
-    }
-    
-    
+	public void firstname() {
+		String firstname = parser.find(bundle.getString("firstname")); 
+		assertEquals("Oliver", firstname);
+	}
 
 	@Test
-	public void enryptDecrypt() throws IOException {
-		final String secretKey = new UserHomeReader().readSecretKey("teilautos-registrierung-secret.key");
-
-		String originalString = "Oliver";
-		
-		String encryptedString = AesEncrypter.encrypt(originalString, secretKey);
-		assertEquals("RE/oWlnAciHM9ixZwbOv4g==", encryptedString);
-		
-		String decryptedString = AesEncrypter.decrypt(encryptedString, secretKey);
-		assertEquals("Oliver", decryptedString);
+	public void readFields() throws IOException {
+		assertEquals("Hock", parser.find("Nachname"));
+		assertEquals("oliver.hock@gmail.com", parser.find("E-Mail"));
 	}
 
 }

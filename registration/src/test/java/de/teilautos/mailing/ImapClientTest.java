@@ -16,39 +16,39 @@
  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-package de.teilautos.encryption;
+package de.teilautos.mailing;
 
-import static org.junit.Assert.*;
-
-import java.io.IOException;
+import javax.mail.Message;
 
 import org.junit.Test;
 
+import de.teilautos.encryption.AesEncrypter;
 import de.teilautos.io.UserHomeReader;
 
-public class AesEncryptorTest {
+public class ImapClientTest {
 
 	@Test
-    public void main() throws IOException {
-    	String password = "";
+	public void fetchUnredMessages() throws Exception {
+
+		String host = "imap.gmail.com";
+		String username = "teilautos.test@gmail.com";
+
 		String secretKey = new UserHomeReader().readSecretKey("teilautos-registrierung-secret.key");
-    	String encryptedPassword = AesEncrypter.encrypt(password, secretKey);
-    	System.out.println(encryptedPassword);
-    }
-    
-    
+		String password = AesEncrypter.decrypt("D/WalIvz3r0flg2miGSd/8EtPN6EqZa61OBmsRM/Iwg=", secretKey);
 
-	@Test
-	public void enryptDecrypt() throws IOException {
-		final String secretKey = new UserHomeReader().readSecretKey("teilautos-registrierung-secret.key");
+		ImapClient client = new ImapClient(host, username, password);
+		client.open();
+		Message[] messages = client.fetchUnreadMessages();
 
-		String originalString = "Oliver";
+		System.out.println("messages.length---" + messages.length);
+
+		for (Message model : messages) {
+			System.out.println("---------------------------------");
+			System.out.println("Subject: " + model.getSubject());
+			System.out.println("Content: " + model.getContent());
+		}
 		
-		String encryptedString = AesEncrypter.encrypt(originalString, secretKey);
-		assertEquals("RE/oWlnAciHM9ixZwbOv4g==", encryptedString);
-		
-		String decryptedString = AesEncrypter.decrypt(encryptedString, secretKey);
-		assertEquals("Oliver", decryptedString);
+		client.close();
 	}
 
 }

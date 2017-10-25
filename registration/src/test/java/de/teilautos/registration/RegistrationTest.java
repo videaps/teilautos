@@ -51,7 +51,7 @@ public class RegistrationTest {
 	}
 
 	@Test
-	public void checkInbox() {
+	public void test() {
 		VariableMap variables = Variables.createVariables();
 		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("Process_RegistrationCheck",
 				variables);

@@ -16,39 +16,33 @@
  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-package de.teilautos.encryption;
+package de.teilautos.registration.parse;
 
-import static org.junit.Assert.*;
+public enum PartnerProgramEnum {
 
-import java.io.IOException;
+	AboRVM("Abo RVM (mit Kundennummer)"), AboMunster("Abo Stadtwerke Münster (Kundennummer)"), EmployeeCityOelde(
+			"Mitarbeiter/in der Stadt Oelde"), None("-");
 
-import org.junit.Test;
+	private String name;
 
-import de.teilautos.io.UserHomeReader;
-
-public class AesEncryptorTest {
-
-	@Test
-    public void main() throws IOException {
-    	String password = "";
-		String secretKey = new UserHomeReader().readSecretKey("teilautos-registrierung-secret.key");
-    	String encryptedPassword = AesEncrypter.encrypt(password, secretKey);
-    	System.out.println(encryptedPassword);
-    }
-    
-    
-
-	@Test
-	public void enryptDecrypt() throws IOException {
-		final String secretKey = new UserHomeReader().readSecretKey("teilautos-registrierung-secret.key");
-
-		String originalString = "Oliver";
-		
-		String encryptedString = AesEncrypter.encrypt(originalString, secretKey);
-		assertEquals("RE/oWlnAciHM9ixZwbOv4g==", encryptedString);
-		
-		String decryptedString = AesEncrypter.decrypt(encryptedString, secretKey);
-		assertEquals("Oliver", decryptedString);
+	private PartnerProgramEnum(String name) {
+		this.name = name;
 	}
 
+	public String getName() {
+		return name;
+	}
+
+	public static PartnerProgramEnum get(String name) {
+		if(AboRVM.getName().equals(name)) {
+			return AboRVM;
+		}
+		if(AboMunster.getName().equals(name)) {
+			return AboMunster;
+		}
+		if(EmployeeCityOelde.getName().equals(name)) {
+			return EmployeeCityOelde;
+		}
+		return None;
+	}
 }

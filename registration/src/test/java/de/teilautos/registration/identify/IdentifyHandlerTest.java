@@ -16,39 +16,29 @@
  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-package de.teilautos.encryption;
+package de.teilautos.registration.identify;
 
 import static org.junit.Assert.*;
 
 import java.io.IOException;
 
+import org.junit.Before;
 import org.junit.Test;
 
-import de.teilautos.io.UserHomeReader;
+public class IdentifyHandlerTest {
 
-public class AesEncryptorTest {
-
-	@Test
-    public void main() throws IOException {
-    	String password = "";
-		String secretKey = new UserHomeReader().readSecretKey("teilautos-registrierung-secret.key");
-    	String encryptedPassword = AesEncrypter.encrypt(password, secretKey);
-    	System.out.println(encryptedPassword);
-    }
-    
-    
+	@Before
+	public void setUp() throws Exception {
+	}
 
 	@Test
-	public void enryptDecrypt() throws IOException {
-		final String secretKey = new UserHomeReader().readSecretKey("teilautos-registrierung-secret.key");
-
-		String originalString = "Oliver";
-		
-		String encryptedString = AesEncrypter.encrypt(originalString, secretKey);
-		assertEquals("RE/oWlnAciHM9ixZwbOv4g==", encryptedString);
-		
-		String decryptedString = AesEncrypter.decrypt(encryptedString, secretKey);
-		assertEquals("Oliver", decryptedString);
+	public void test() throws IOException {
+		IdentifyHandler handler = new IdentifyHandler();
+		String content = handler.createContent("Oliver", "Hock", "oliver.hock");
+		assertTrue(content.indexOf("Oliver") > 0);
+		assertTrue(content.indexOf("Hock") > 0);
+		assertTrue(content.indexOf("oliver.hock") > 0);
+		System.out.println(content);
 	}
 
 }

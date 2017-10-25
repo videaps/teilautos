@@ -16,7 +16,7 @@
  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-package de.teilautos.encryption;
+package de.teilautos.io;
 
 import static org.junit.Assert.*;
 
@@ -24,31 +24,23 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import de.teilautos.io.UserHomeReader;
+import de.teilautos.io.FileReader;
 
-public class AesEncryptorTest {
-
-	@Test
-    public void main() throws IOException {
-    	String password = "";
-		String secretKey = new UserHomeReader().readSecretKey("teilautos-registrierung-secret.key");
-    	String encryptedPassword = AesEncrypter.encrypt(password, secretKey);
-    	System.out.println(encryptedPassword);
-    }
-    
-    
+public class FileReaderTest {
 
 	@Test
-	public void enryptDecrypt() throws IOException {
-		final String secretKey = new UserHomeReader().readSecretKey("teilautos-registrierung-secret.key");
-
-		String originalString = "Oliver";
-		
-		String encryptedString = AesEncrypter.encrypt(originalString, secretKey);
-		assertEquals("RE/oWlnAciHM9ixZwbOv4g==", encryptedString);
-		
-		String decryptedString = AesEncrypter.decrypt(encryptedString, secretKey);
-		assertEquals("Oliver", decryptedString);
+	public void subject() throws IOException {
+		FileReader fileReader = new FileReader();
+		String fileContent = fileReader.readFile("identification-mail-subject.txt");
+		assertEquals("Deine Identifizierung für \"Teilautos - Das regionale Carsharing\"", fileContent);
+	}
+	
+	@Test
+	public void content() throws IOException {
+		FileReader fileReader = new FileReader();
+		String fileContent = fileReader.readFile("identification-mail-content.txt");
+		assertTrue("Deine Identifizierung für \"Teilautos - Das regionale Carsharing\"", fileContent.startsWith("Hallo und herzlich Willkommen bei Teilautos."));
+		System.out.println(fileContent);
 	}
 
 }

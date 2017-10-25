@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.10.0">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="1.8.1">
   <bpmn:collaboration id="Collaboration_Registration">
     <bpmn:participant id="Participant_RegistrationCheck" name="Registration Check" processRef="Process_RegistrationCheck" />
   </bpmn:collaboration>
@@ -31,24 +31,26 @@
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_16gv8jb</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1c1b4c2</bpmn:outgoing>
-      <bpmn:multiInstanceLoopCharacteristics isSequential="true" camunda:collection="emailModels" camunda:elementVariable="registrationMail" />
+      <bpmn:multiInstanceLoopCharacteristics isSequential="true" camunda:collection="newRegistrationEmails" camunda:elementVariable="newRegistrationMail" />
     </bpmn:callActivity>
-    <bpmn:serviceTask id="Task_CheckInbox" name="Check Inbox" camunda:class="de.teilautos.registration.check.RegistrationCheckDelegate">
-      <bpmn:extensionElements>
-        <camunda:field name="host">        <camunda:expression>${ host }</camunda:expression>
-</camunda:field>
-        <camunda:field name="username">        <camunda:expression>${ username }</camunda:expression>
-</camunda:field>
-        <camunda:field name="password">        <camunda:expression>${ password }</camunda:expression>
-</camunda:field>
-      </bpmn:extensionElements>
+    <bpmn:serviceTask id="Task_CheckInbox" name="Check Inbox" camunda:class="de.teilautos.registration.CheckInboxDelegate">
       <bpmn:incoming>SequenceFlow_0okxjpg</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_16gv8jb</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_0lw6n4t">
+        <bpmn:targetRef>DataObjectReference_1l5xs5j</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
     </bpmn:serviceTask>
-    <bpmn:serviceTask id="Task_ConfigureMailClient" name="Configure Mail Client" camunda:class="de.teilautos.registration.MailClientConfiguratorDelegate">
+    <bpmn:serviceTask id="Task_ConfigureMailClient" name="Configure Mail Client" camunda:class="de.teilautos.registration.ConfigureMailServerDelegate">
       <bpmn:incoming>SequenceFlow_1akk9id</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0okxjpg</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_1bsxrla">
+        <bpmn:targetRef>DataObjectReference_0smvvnw</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
     </bpmn:serviceTask>
+    <bpmn:dataObjectReference id="DataObjectReference_0smvvnw" name="registrationServerConfig, identificationServerConfig" dataObjectRef="DataObject_05w9j6i" />
+    <bpmn:dataObject id="DataObject_05w9j6i" />
+    <bpmn:dataObjectReference id="DataObjectReference_1l5xs5j" name="newRegistrationEmails" dataObjectRef="DataObject_0knqv9m" />
+    <bpmn:dataObject id="DataObject_0knqv9m" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_Registration">
@@ -104,6 +106,26 @@
       <bpmndi:BPMNShape id="ServiceTask_1jqbzn4_di" bpmnElement="Task_ConfigureMailClient">
         <dc:Bounds x="257" y="48" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectReference_0smvvnw_di" bpmnElement="DataObjectReference_0smvvnw">
+        <dc:Bounds x="319" y="177" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="294" y="231" width="88" height="48" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_1bsxrla_di" bpmnElement="DataOutputAssociation_1bsxrla">
+        <di:waypoint xsi:type="dc:Point" x="319" y="128" />
+        <di:waypoint xsi:type="dc:Point" x="334" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="DataObjectReference_1l5xs5j_di" bpmnElement="DataObjectReference_1l5xs5j">
+        <dc:Bounds x="470" y="177" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="446" y="231" width="85" height="24" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_0lw6n4t_di" bpmnElement="DataOutputAssociation_0lw6n4t">
+        <di:waypoint xsi:type="dc:Point" x="477" y="128" />
+        <di:waypoint xsi:type="dc:Point" x="496" y="177" />
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

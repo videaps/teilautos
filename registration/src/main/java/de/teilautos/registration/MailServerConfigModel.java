@@ -16,39 +16,46 @@
  WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE 
  SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 */
-package de.teilautos.encryption;
+package de.teilautos.registration;
 
-import static org.junit.Assert.*;
+import java.io.Serializable;
 
-import java.io.IOException;
+public class MailServerConfigModel implements Serializable {
+	private static final long serialVersionUID = 2415154398717262640L;
 
-import org.junit.Test;
+	protected String host;
+	protected String username;
+	protected String password;
 
-import de.teilautos.io.UserHomeReader;
+	public MailServerConfigModel(String host, String username, String password) {
+		super();
+		this.host = host;
+		this.username = username;
+		this.password = password;
+	}
 
-public class AesEncryptorTest {
+	public String getHost() {
+		return host;
+	}
 
-	@Test
-    public void main() throws IOException {
-    	String password = "";
-		String secretKey = new UserHomeReader().readSecretKey("teilautos-registrierung-secret.key");
-    	String encryptedPassword = AesEncrypter.encrypt(password, secretKey);
-    	System.out.println(encryptedPassword);
-    }
-    
-    
+	public void setHost(String host) {
+		this.host = host;
+	}
 
-	@Test
-	public void enryptDecrypt() throws IOException {
-		final String secretKey = new UserHomeReader().readSecretKey("teilautos-registrierung-secret.key");
+	public String getUsername() {
+		return username;
+	}
 
-		String originalString = "Oliver";
-		
-		String encryptedString = AesEncrypter.encrypt(originalString, secretKey);
-		assertEquals("RE/oWlnAciHM9ixZwbOv4g==", encryptedString);
-		
-		String decryptedString = AesEncrypter.decrypt(encryptedString, secretKey);
-		assertEquals("Oliver", decryptedString);
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 }

@@ -34,6 +34,11 @@ public class MailServerConfigModel implements Serializable {
 		this.password = password;
 	}
 
+	@Override
+	public String toString() {
+		return "MailServerConfigModel [host=" + host + ", username=" + username + "]";
+	}
+
 	public String getHost() {
 		return host;
 	}

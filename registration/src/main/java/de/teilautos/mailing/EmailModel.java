@@ -18,7 +18,10 @@
 */
 package de.teilautos.mailing;
 
-public class EmailModel {
+import java.io.Serializable;
+
+public class EmailModel implements Serializable {
+	private static final long serialVersionUID = 6561337187227606707L;
 
 	private String subject;
 	private String content;

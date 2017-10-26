@@ -18,6 +18,7 @@
 */
 package de.teilautos.registration;
 
+import org.apache.log4j.Logger;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 
@@ -26,14 +27,19 @@ import de.teilautos.registration.parse.ParseHandler;
 import de.teilautos.registration.parse.RegistrationModel;
 
 public class ParseRegistrationDelegate implements JavaDelegate {
+	private static final Logger logger = Logger.getLogger(ParseRegistrationDelegate.class);
 
 	public void execute(DelegateExecution execution) throws Exception {
+		logger.trace("begin");
+		
 		EmailModel newRegistrationMail = (EmailModel) execution.getVariable("newRegistrationMail");
 
 		ParseHandler handler = new ParseHandler();
 		RegistrationModel model = handler.parseContent(newRegistrationMail.getContent());
-		
+		logger.debug(model);
 		execution.setVariable("registrationModel", model);
+		
+		logger.trace("end");
 	}
 
 }

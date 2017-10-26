@@ -21,14 +21,18 @@ package de.teilautos.registration;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.apache.log4j.Logger;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 
 import de.teilautos.io.FileReader;
 
 public class ConfigureMailServerDelegate implements JavaDelegate {
+	private static final Logger logger = Logger.getLogger(ConfigureMailServerDelegate.class);
 
 	public void execute(DelegateExecution execution) throws Exception {
+		logger.trace("begin");
+		
 		Properties properties = new Properties();
 		InputStream stream = FileReader.class.getResourceAsStream("/" + "mail-server-config.properties");
 		properties.load(stream);
@@ -36,15 +40,16 @@ public class ConfigureMailServerDelegate implements JavaDelegate {
 		MailServerConfigModel registrationServerConfig = new MailServerConfigModel(properties.getProperty("registration.mail.server.host"),
 				properties.getProperty("registration.mail.server.username"),
 				properties.getProperty("registration.mail.server.password"));
-
+		logger.debug(registrationServerConfig);
 		execution.setVariable("registrationServerConfig", registrationServerConfig);
 		
 		MailServerConfigModel identificationServerConfig = new MailServerConfigModel(properties.getProperty("identification.mail.server.host"),
 				properties.getProperty("identification.mail.server.username"),
 				properties.getProperty("identification.mail.server.password"));
-
+		logger.debug(identificationServerConfig);
 		execution.setVariable("identificationServerConfig", identificationServerConfig);
 
+		logger.trace("end");
 	}
 
 }

@@ -39,8 +39,10 @@ public class UserHomeReader {
 	 * @throws IOException
 	 */
 	public String readSecretKey(String fileName) throws IOException {
+		logger.trace("begin");
+		
 		String filePathName = USER_HOME+FILE_SEPERATOR+fileName;
-		logger.debug("filePathName="+filePathName);
+		logger.debug(filePathName);
 		
 		java.io.FileReader fileReader = new java.io.FileReader(filePathName);
 		BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -50,6 +52,8 @@ public class UserHomeReader {
 		bufferedReader.close();
 		fileReader.close();
 
+		logger.trace("end");
+		
 		return secretKey;
 	}
 }

@@ -23,6 +23,7 @@ import java.util.Collection;
 
 import javax.mail.Message;
 
+import org.apache.log4j.Logger;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 
@@ -32,8 +33,11 @@ import de.teilautos.mailing.EmailModel;
 import de.teilautos.mailing.ImapClient;
 
 public class CheckInboxDelegate implements JavaDelegate {
-
+	private static final Logger logger = Logger.getLogger(CheckInboxDelegate.class);
+	
 	public void execute(DelegateExecution execution) throws Exception {
+		logger.trace("begin");
+		
 		MailServerConfigModel mailServerConfig = (MailServerConfigModel) execution
 				.getVariable("registrationServerConfig");
 
@@ -53,12 +57,15 @@ public class CheckInboxDelegate implements JavaDelegate {
 			
 				String content = message.getContent().toString();
 				EmailModel email = new EmailModel(subject, content);
+				logger.debug(email);
 				newRegistrationEmails.add(email);
 			}
 		}
 		client.close();
 
 		execution.setVariable("newRegistrationEmails", newRegistrationEmails);
+		
+		logger.trace("end");
 	}
 
 }

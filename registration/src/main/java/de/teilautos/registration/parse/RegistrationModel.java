@@ -38,6 +38,15 @@ public class RegistrationModel implements Serializable {
 	private boolean dataPrivacyAccepted;
 	private boolean newsletterWanted;
 
+	@Override
+	public String toString() {
+		return "RegistrationModel [firstname=" + firstname + ", surname=" + surname + ", email=" + email + ", streetNo="
+				+ streetNo + ", postCode=" + postCode + ", city=" + city + ", phone=" + phone + ", partnerProgram="
+				+ partnerProgram + ", reference=" + reference + ", termsAndConditionsAccepted="
+				+ termsAndConditionsAccepted + ", dataPrivacyAccepted=" + dataPrivacyAccepted + ", newsletterWanted="
+				+ newsletterWanted + "]";
+	}
+
 	public String getFirstname() {
 		return firstname;
 	}

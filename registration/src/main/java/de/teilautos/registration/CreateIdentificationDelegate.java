@@ -18,6 +18,7 @@
 */
 package de.teilautos.registration;
 
+import org.apache.log4j.Logger;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 
@@ -26,8 +27,11 @@ import de.teilautos.registration.identify.IdentifyHandler;
 import de.teilautos.registration.parse.RegistrationModel;
 
 public class CreateIdentificationDelegate implements JavaDelegate {
+	private static final Logger logger = Logger.getLogger(CreateIdentificationDelegate.class);
 
 	public void execute(DelegateExecution execution) throws Exception {
+		logger.trace("begin");
+		
 		RegistrationModel registrationModel = (RegistrationModel) execution.getVariable("registrationModel");
 
 		IdentifyHandler handler = new IdentifyHandler();
@@ -37,9 +41,12 @@ public class CreateIdentificationDelegate implements JavaDelegate {
 		String content = handler.createContent(firstname, surname, username);
 		
 		String subject = "Ihre Registrierung bei \"Teilautos - Das regionale Carsharing\"";
+		// FIXME get subject from config file
 		EmailModel identificationMail = new EmailModel(subject, content);
-		
+		logger.debug(identificationMail);
 		execution.setVariable("identificationMail", identificationMail);
+		
+		logger.trace("end");
 	}
 
 }

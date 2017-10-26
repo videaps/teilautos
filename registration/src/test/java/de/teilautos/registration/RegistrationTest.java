@@ -20,6 +20,8 @@ package de.teilautos.registration;
 
 import static org.camunda.bpm.engine.test.assertions.ProcessEngineAssertions.assertThat;
 
+import java.io.IOException;
+
 import org.camunda.bpm.engine.RuntimeService;
 import org.camunda.bpm.engine.TaskService;
 import org.camunda.bpm.engine.runtime.ProcessInstance;
@@ -33,7 +35,12 @@ import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 
-@Deployment(resources = { "registration.bpmn", "identification-mail.bpmn", "registration-mail-verification.dmn" })
+import de.teilautos.encryption.AesEncrypter;
+import de.teilautos.io.FileReader;
+import de.teilautos.io.UserHomeReader;
+import de.teilautos.mailing.SmtpClient;
+
+@Deployment(resources = { "registration.bpmn", "identification-mail.bpmn" })
 public class RegistrationTest {
 
 	@Rule
@@ -50,8 +57,27 @@ public class RegistrationTest {
 		taskService = processEngine.getTaskService();
 	}
 
+	private void sendRegistrationMail() throws IOException {
+		String secretKey = new UserHomeReader().readSecretKey("teilautos-registrierung-secret.key");
+		SmtpClient registrationMailSender = new SmtpClient("pop.gmail.com", "teilautos.jimdo@gmail.com",
+				AesEncrypter.decrypt("D/WalIvz3r0flg2miGSd/8EtPN6EqZa61OBmsRM/Iwg=", secretKey));
+		String subject = "Nachricht über https://www.teilautos.de/registrieren/";
+		registrationMailSender.setSubject(subject);
+		String content = new FileReader().readFile("registration-mail.txt");
+		registrationMailSender.setContent(content);
+		String registrationMailTo = "teilautos.test@gmail.com";
+		registrationMailSender.send(registrationMailTo);
+	}
+
 	@Test
-	public void test() {
+	public void testSendRegistrationMail() throws IOException {
+		sendRegistrationMail();
+	}
+	
+	@Test
+	public void test() throws IOException {
+		sendRegistrationMail();
+
 		VariableMap variables = Variables.createVariables();
 		ProcessInstance processInstance = runtimeService.startProcessInstanceByKey("Process_RegistrationCheck",
 				variables);

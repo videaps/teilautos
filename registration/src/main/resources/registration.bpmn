@@ -22,12 +22,8 @@
     </bpmn:endEvent>
     <bpmn:callActivity id="Task_SendIdentificationMail" name="Send Identification Mail" calledElement="Process_IdentificationMail">
       <bpmn:extensionElements>
-        <camunda:in source="registrationMail" target="registrationMail" />
-        <camunda:in source="host" target="host" />
-        <camunda:in source="username" target="username" />
-        <camunda:in source="password" target="password" />
-        <camunda:in source="from" target="from" />
-        <camunda:in source="bcc" target="bcc" />
+        <camunda:in source="newRegistrationMail" target="newRegistrationMail" />
+        <camunda:in source="identificationServerConfig" target="identificationServerConfig" />
       </bpmn:extensionElements>
       <bpmn:incoming>SequenceFlow_16gv8jb</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_1c1b4c2</bpmn:outgoing>

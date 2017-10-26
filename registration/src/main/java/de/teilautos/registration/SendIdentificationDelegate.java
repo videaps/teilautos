@@ -18,6 +18,7 @@
 */
 package de.teilautos.registration;
 
+import org.apache.log4j.Logger;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
 
@@ -28,8 +29,11 @@ import de.teilautos.mailing.SmtpClient;
 import de.teilautos.registration.parse.RegistrationModel;
 
 public class SendIdentificationDelegate implements JavaDelegate {
+	private static final Logger logger = Logger.getLogger(SendIdentificationDelegate.class);
 
 	public void execute(DelegateExecution execution) throws Exception {
+		logger.trace("begin");
+		
 		MailServerConfigModel identificationServerConfig = (MailServerConfigModel) execution
 				.getVariable("identificationServerConfig");
 		EmailModel identificationMail = (EmailModel) execution.getVariable("identificationMail");
@@ -44,6 +48,8 @@ public class SendIdentificationDelegate implements JavaDelegate {
 		mailSender.setContent(identificationMail.getContent());
 		
 		mailSender.send(registrationModel.getEmail());
+		
+		logger.trace("end");
 	}
 
 }

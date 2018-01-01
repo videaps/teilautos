@@ -3,6 +3,8 @@ package de.teilautos.tariff.calculation.ui;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.servlet.annotation.WebServlet;
 
@@ -38,6 +40,8 @@ import de.teilautos.tariff.calculation.services.CalculationService;
 public class CalculatorUI extends UI {
 	private static final long serialVersionUID = -3570006873635093879L;
 
+	private static final Logger logger = Logger.getLogger(CalculatorUI.class.getName());
+
 	private static final Double KILOMETER_PRO_STUNDE = 7.5;
 	private static final String INIT_KILOMETER_PER_YEAR = "1000";
 	private static final Integer MAX_KILOMETER_PER_YEAR = 10000;
@@ -46,7 +50,7 @@ public class CalculatorUI extends UI {
 	private static final String WIDTH_SLIDER = "220";
 	private static final String WIDTH_TEXT = "120px";
 	private static final String WIDTH_SELECT = "320px";
-	
+
 	private ResourceBundle bundle = ResourceBundle.getBundle("calculator");
 
 	private Slider kmSlider = new Slider(bundle.getString("kilometer_per_year"), 0, MAX_KILOMETER_PER_YEAR);
@@ -68,10 +72,16 @@ public class CalculatorUI extends UI {
 	private Label operationsCostCarsharing = new Label();
 	private Label operationsCostOwnCar = new Label();
 
+	private Label valueLossSavings = new Label();
+	private Label fixCostSavings = new Label();
+	private Label garageCostSavings = new Label();
+	private Label operationsCostSavings = new Label();
+
 	private CalculationService calculationService = new CalculationService();
 
 	@Override
 	protected void init(VaadinRequest vaadinRequest) {
+		logger.info("--> Initialising Calculator");
 		final VerticalLayout root = new VerticalLayout();
 
 		HorizontalLayout inputLayout = initInputPane();
@@ -92,44 +102,55 @@ public class CalculatorUI extends UI {
 		GridLayout detailsLayout = initDetailsPane();
 		root.addComponent(detailsLayout);
 
+		Label footer = new Label(bundle.getString("footer"));
+		footer.setWidth(WIDTH_PANE);
+		footer.setStyleName("footer");
+		root.addComponent(footer);
+
 		update();
 
 		setSizeUndefined();
 		setContent(root);
+
+		logger.info("<-- Initialising Calculator");
 	}
 
 	private GridLayout initCostPane() {
 		GridLayout costLayout = new GridLayout(3, 2);
 		costLayout.setWidth(WIDTH_PANE);
 		costLayout.setCaption(bundle.getString("mobility_cost"));
-		
+
+		// Header
+
 		Label carsharingHeader = new Label(bundle.getString("cost_carsharing"));
 		carsharingHeader.setStyleName("grid-header");
 		costLayout.addComponent(carsharingHeader, 0, 0);
 		costLayout.setComponentAlignment(carsharingHeader, Alignment.MIDDLE_CENTER);
-		
-		Label savingsHeader = new Label(bundle.getString("cost_savings"));
-		savingsHeader.setStyleName("grid-header");
-		costLayout.addComponent(savingsHeader, 1, 0);
-		costLayout.setComponentAlignment(savingsHeader, Alignment.MIDDLE_CENTER);
 
 		Label ownCarHeader = new Label(bundle.getString("cost_own_car"));
 		ownCarHeader.setStyleName("grid-header");
-		costLayout.addComponent(ownCarHeader, 2, 0);
+		costLayout.addComponent(ownCarHeader, 1, 0);
 		costLayout.setComponentAlignment(ownCarHeader, Alignment.MIDDLE_CENTER);
+
+		Label savingsHeader = new Label(bundle.getString("cost_savings"));
+		savingsHeader.setStyleName("grid-header");
+		costLayout.addComponent(savingsHeader, 2, 0);
+		costLayout.setComponentAlignment(savingsHeader, Alignment.MIDDLE_CENTER);
+
+		// Panel
 
 		costCarsharing.setStyleName("grid-cell");
 		costLayout.addComponent(costCarsharing, 0, 1);
 		costLayout.setComponentAlignment(costCarsharing, Alignment.MIDDLE_CENTER);
-		
-		costSavings.setStyleName("grid-cell");
-		costLayout.addComponent(costSavings, 1, 1);
-		costLayout.setComponentAlignment(costSavings, Alignment.MIDDLE_CENTER);
 
 		costOwnCar.setStyleName("grid-cell");
-		costLayout.addComponent(costOwnCar, 2, 1);
+		costLayout.addComponent(costOwnCar, 1, 1);
 		costLayout.setComponentAlignment(costOwnCar, Alignment.MIDDLE_CENTER);
-		
+
+		costSavings.setStyleName("grid-cell");
+		costLayout.addComponent(costSavings, 2, 1);
+		costLayout.setComponentAlignment(costSavings, Alignment.MIDDLE_CENTER);
+
 		return costLayout;
 	}
 
@@ -138,7 +159,7 @@ public class CalculatorUI extends UI {
 		tariffLabel.setStyleName("tariff");
 
 		tariffRecommended.setStyleName("recommendation");
-		
+
 		HorizontalLayout tariffLayout = new HorizontalLayout(tariffLabel, tariffRecommended);
 		return tariffLayout;
 	}
@@ -168,85 +189,107 @@ public class CalculatorUI extends UI {
 	}
 
 	private GridLayout initDetailsPane() {
-		GridLayout detailsLayout = new GridLayout(3, 5);
+		GridLayout detailsLayout = new GridLayout(4, 5);
 		detailsLayout.setWidth(WIDTH_PANE);
 		detailsLayout.setCaption(bundle.getString("cost_details"));
-		
+
+		// Header
+
+		Label costDriverHeader = new Label(bundle.getString("cost_driver"));
+		costDriverHeader.setStyleName("grid-header");
+		detailsLayout.addComponent(costDriverHeader, 0, 0);
+		detailsLayout.setComponentAlignment(costDriverHeader, Alignment.MIDDLE_LEFT);
+
 		Label carsharingHeader = new Label(bundle.getString("cost_carsharing"));
 		carsharingHeader.setStyleName("grid-header");
-		detailsLayout.addComponent(carsharingHeader, 0, 0);
-		detailsLayout.setComponentAlignment(carsharingHeader, Alignment.MIDDLE_CENTER);
-		
-		Label savingsHeader = new Label(bundle.getString("cost_driver"));
-		savingsHeader.setStyleName("grid-header");
-		detailsLayout.addComponent(savingsHeader, 1, 0);
-		detailsLayout.setComponentAlignment(savingsHeader, Alignment.MIDDLE_CENTER);
+		detailsLayout.addComponent(carsharingHeader, 1, 0);
+		detailsLayout.setComponentAlignment(carsharingHeader, Alignment.MIDDLE_RIGHT);
 
 		Label ownCarHeader = new Label(bundle.getString("cost_own_car"));
 		ownCarHeader.setStyleName("grid-header");
 		detailsLayout.addComponent(ownCarHeader, 2, 0);
-		detailsLayout.setComponentAlignment(ownCarHeader, Alignment.MIDDLE_CENTER);
+		detailsLayout.setComponentAlignment(ownCarHeader, Alignment.MIDDLE_RIGHT);
 
-		valueLossCarsharing.setStyleName("grid-cell");
-		detailsLayout.addComponent(valueLossCarsharing, 0, 1);
-		detailsLayout.setComponentAlignment(valueLossCarsharing, Alignment.MIDDLE_CENTER);
+		Label savingsHeader = new Label(bundle.getString("cost_savings"));
+		savingsHeader.setStyleName("grid-header");
+		detailsLayout.addComponent(savingsHeader, 3, 0);
+		detailsLayout.setComponentAlignment(savingsHeader, Alignment.MIDDLE_RIGHT);
+
+		// Column Cost Driver
 
 		Label valueLossLabel = new Label(bundle.getString("cost_value_loss"));
 		valueLossLabel.setStyleName("grid-cell");
-		detailsLayout.addComponent(valueLossLabel, 1, 1);
-		detailsLayout.setComponentAlignment(valueLossLabel, Alignment.MIDDLE_CENTER);
-
-		valueLossOwnCar.setStyleName("grid-cell");
-		detailsLayout.addComponent(valueLossOwnCar, 2, 1);
-		detailsLayout.setComponentAlignment(valueLossOwnCar, Alignment.MIDDLE_CENTER);
-
-		fixCostCarsharing.setStyleName("grid-cell");
-		detailsLayout.addComponent(fixCostCarsharing, 0, 2);
-		detailsLayout.setComponentAlignment(fixCostCarsharing, Alignment.MIDDLE_CENTER);
+		detailsLayout.addComponent(valueLossLabel, 0, 1);
+		detailsLayout.setComponentAlignment(valueLossLabel, Alignment.MIDDLE_LEFT);
 
 		Label fixCostLabel = new Label(bundle.getString("cost_fix"));
 		fixCostLabel.setStyleName("grid-cell");
-		detailsLayout.addComponent(fixCostLabel, 1, 2);
-		detailsLayout.setComponentAlignment(fixCostLabel, Alignment.MIDDLE_CENTER);
+		detailsLayout.addComponent(fixCostLabel, 0, 2);
+		detailsLayout.setComponentAlignment(fixCostLabel, Alignment.MIDDLE_LEFT);
+
+		Label garageCostLabel = new Label(bundle.getString("cost_garage"));
+		garageCostLabel.setStyleName("grid-cell");
+		detailsLayout.addComponent(garageCostLabel, 0, 3);
+		detailsLayout.setComponentAlignment(garageCostLabel, Alignment.MIDDLE_LEFT);
+
+		Label operationsCostLabel = new Label(bundle.getString("cost_operation"));
+		operationsCostLabel.setStyleName("grid-cell");
+		detailsLayout.addComponent(operationsCostLabel, 0, 4);
+		detailsLayout.setComponentAlignment(operationsCostLabel, Alignment.MIDDLE_LEFT);
+
+		// Column Carsharing
+
+		valueLossCarsharing.setStyleName("grid-cell");
+		detailsLayout.addComponent(valueLossCarsharing, 1, 1);
+		detailsLayout.setComponentAlignment(valueLossCarsharing, Alignment.MIDDLE_RIGHT);
+
+		fixCostCarsharing.setStyleName("grid-cell");
+		detailsLayout.addComponent(fixCostCarsharing, 1, 2);
+		detailsLayout.setComponentAlignment(fixCostCarsharing, Alignment.MIDDLE_RIGHT);
+
+		garageCostCarsharing.setStyleName("grid-cell");
+		detailsLayout.addComponent(garageCostCarsharing, 1, 3);
+		detailsLayout.setComponentAlignment(garageCostCarsharing, Alignment.MIDDLE_RIGHT);
+
+		operationsCostCarsharing.setStyleName("grid-cell");
+		detailsLayout.addComponent(operationsCostCarsharing, 1, 4);
+		detailsLayout.setComponentAlignment(operationsCostCarsharing, Alignment.MIDDLE_RIGHT);
+
+		// Column Own Car
+
+		valueLossOwnCar.setStyleName("grid-cell");
+		detailsLayout.addComponent(valueLossOwnCar, 2, 1);
+		detailsLayout.setComponentAlignment(valueLossOwnCar, Alignment.MIDDLE_RIGHT);
 
 		fixCostOwnCar.setStyleName("grid-cell");
 		detailsLayout.addComponent(fixCostOwnCar, 2, 2);
-		detailsLayout.setComponentAlignment(fixCostOwnCar, Alignment.MIDDLE_CENTER);
-		
-		garageCostCarsharing.setStyleName("grid-cell");
-		detailsLayout.addComponent(garageCostCarsharing, 0, 3);
-		detailsLayout.setComponentAlignment(garageCostCarsharing, Alignment.MIDDLE_CENTER);
-		
-		Label garageCostLabel = new Label(bundle.getString("cost_garage"));
-		garageCostLabel.setStyleName("grid-cell");
-		detailsLayout.addComponent(garageCostLabel, 1, 3);
-		detailsLayout.setComponentAlignment(garageCostLabel, Alignment.MIDDLE_CENTER);
+		detailsLayout.setComponentAlignment(fixCostOwnCar, Alignment.MIDDLE_RIGHT);
 
 		garageCostOwnCar.setStyleName("grid-cell");
 		detailsLayout.addComponent(garageCostOwnCar, 2, 3);
-		detailsLayout.setComponentAlignment(garageCostOwnCar, Alignment.MIDDLE_CENTER);
-		
-		operationsCostCarsharing.setStyleName("grid-cell");
-		detailsLayout.addComponent(operationsCostCarsharing, 0, 4);
-		detailsLayout.setComponentAlignment(operationsCostCarsharing, Alignment.MIDDLE_CENTER);
-		
-		Label operationsCostLabel = new Label(bundle.getString("cost_operation"));
-		operationsCostLabel.setStyleName("grid-cell");
-		detailsLayout.addComponent(operationsCostLabel, 1, 4);
-		detailsLayout.setComponentAlignment(operationsCostLabel, Alignment.MIDDLE_CENTER);
-		
+		detailsLayout.setComponentAlignment(garageCostOwnCar, Alignment.MIDDLE_RIGHT);
+
 		operationsCostOwnCar.setStyleName("grid-cell");
 		detailsLayout.addComponent(operationsCostOwnCar, 2, 4);
-		detailsLayout.setComponentAlignment(operationsCostOwnCar, Alignment.MIDDLE_CENTER);
-		
-		
-//		HorizontalLayout valueLossPane = new HorizontalLayout(valueLossCarsharingValue, valueLossLabel,
-//				valueLossOwnCarValue);
-//		HorizontalLayout fixCostPane = new HorizontalLayout(fixCostCarsharingValue, fixCostLabel, fixCostOwnCarValue);
-//		HorizontalLayout garageCostPane = new HorizontalLayout(garageCostCarsharingValue, garageCostLabel,
-//				garageCostOwnCarValue);
-//		HorizontalLayout operationsCostPane = new HorizontalLayout(operationsCostCarsharingValue, operationsCostLabel,
-//				operationsCostOwnCarValue);
+		detailsLayout.setComponentAlignment(operationsCostOwnCar, Alignment.MIDDLE_RIGHT);
+
+		// Column Savings
+
+		valueLossSavings.setStyleName("grid-cell");
+		detailsLayout.addComponent(valueLossSavings, 3, 1);
+		detailsLayout.setComponentAlignment(valueLossSavings, Alignment.MIDDLE_RIGHT);
+
+		fixCostSavings.setStyleName("grid-cell");
+		detailsLayout.addComponent(fixCostSavings, 3, 2);
+		detailsLayout.setComponentAlignment(fixCostSavings, Alignment.MIDDLE_RIGHT);
+
+		garageCostSavings.setStyleName("grid-cell");
+		detailsLayout.addComponent(garageCostSavings, 3, 3);
+		detailsLayout.setComponentAlignment(garageCostSavings, Alignment.MIDDLE_RIGHT);
+
+		operationsCostSavings.setStyleName("grid-cell");
+		detailsLayout.addComponent(operationsCostSavings, 3, 4);
+		detailsLayout.setComponentAlignment(operationsCostSavings, Alignment.MIDDLE_RIGHT);
 
 		return detailsLayout;
 	}
@@ -256,6 +299,15 @@ public class CalculatorUI extends UI {
 		String tariffName = calculationService.getTariffName(km.intValue());
 		Price price = calculationService.getPrice(tariffName);
 		String carTypeName = ownCarSelect.getValue();
+
+		if (logger.isLoggable(Level.INFO)) {
+			StringBuffer buf = new StringBuffer();
+			buf.append("km=").append(km).append(";");
+			buf.append("carTypeName=").append(carTypeName).append(";");
+			buf.append("tariffName=").append(tariffName).append(";");
+			buf.append("price=").append(price.toString());
+			logger.info(buf.toString());
+		}
 
 		double yearlyCostCarsharing = calculationService.yearlyCostCarsharing(km.intValue(), price,
 				KILOMETER_PRO_STUNDE);
@@ -269,17 +321,22 @@ public class CalculatorUI extends UI {
 
 		tariffRecommended.setValue(tariffName);
 
+		// Details pane
+
 		DetailCarCost carCostOwnCar = calculationService.yearlyDetailCostOwnCar(ownCarSelect.getValue(), km.intValue());
 
 		valueLossCarsharing.setValue(Beautifier.euros(0.0));
 		valueLossOwnCar.setValue(Beautifier.euros(carCostOwnCar.getValueLoss()));
+		valueLossSavings.setValue(Beautifier.euros(carCostOwnCar.getValueLoss() - 0.0));
 
 		double yearlyContribution = calculationService.yearlyContribution(price.getMonthlyRate());
 		fixCostCarsharing.setValue(Beautifier.euros(yearlyContribution));
 		fixCostOwnCar.setValue(Beautifier.euros(carCostOwnCar.getFixCost()));
+		fixCostSavings.setValue(Beautifier.euros(carCostOwnCar.getFixCost() - yearlyContribution));
 
 		garageCostCarsharing.setValue(Beautifier.euros(0.0));
 		garageCostOwnCar.setValue(Beautifier.euros(carCostOwnCar.getGarageCost()));
+		garageCostSavings.setValue(Beautifier.euros(carCostOwnCar.getGarageCost() - 0.0));
 
 		double hourlyRatesPerYear = calculationService.hourlyRatesPerYear(km.intValue(), KILOMETER_PRO_STUNDE,
 				price.getHourlyRate());
@@ -288,6 +345,8 @@ public class CalculatorUI extends UI {
 		double operationsCostCarsharingValue = hourlyRatesPerYear + kilometerPricesPerYear;
 		operationsCostCarsharing.setValue(Beautifier.euros(operationsCostCarsharingValue));
 		operationsCostOwnCar.setValue(Beautifier.euros(carCostOwnCar.getOperationsCost()));
+		operationsCostSavings
+				.setValue(Beautifier.euros(carCostOwnCar.getOperationsCost() - operationsCostCarsharingValue));
 	}
 
 	private List<String> allCarTypeNames() {
@@ -304,10 +363,10 @@ public class CalculatorUI extends UI {
 		String kmStr = kmText.getValue();
 		Double kmValue = Double.valueOf(kmStr);
 		kmSlider.setValue(kmValue);
-		
+
 		update();
 	}
-	
+
 	private void onSliderChange() {
 		Double kmValue = kmSlider.getValue();
 		String kmStr = Beautifier.kilometer(kmValue);

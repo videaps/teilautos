@@ -76,11 +76,15 @@ $v-focus-color: #BE1622;
   	color: #3C3C3B;
   	font-size: 24px;
   	font-weight: 600;
+    margin-left: 10px;
+    margin-right: 10px;
   }
   .v-label-grid-cell {
   	color: #3C3C3B;
   	font-size: 24px;
   	font-weight: 300;
+    margin-left: 10px;
+    margin-right: 10px;
   }
    
   .v-label-tariff {
@@ -92,6 +96,9 @@ $v-focus-color: #BE1622;
   	font-size: 24px;
     font-weight: 900;
  	color: #BE1622;
+  }
+  .v-label-footer {
+  	font-size: 10px;
   }
  
   .v-gridlayout {

@@ -34,6 +34,12 @@ public class Price {
 		this.monthlyRate = monthlyRate;
 	}
 
+	@Override
+	public String toString() {
+		return "Price [hourlyRate=" + hourlyRate + ", kilometerPrice=" + kilometerPrice + ", monthlyRate=" + monthlyRate
+				+ "]";
+	}
+
 	public Float getHourlyRate() {
 		return hourlyRate;
 	}

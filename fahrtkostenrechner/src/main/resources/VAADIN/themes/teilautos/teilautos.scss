@@ -1,0 +1,108 @@
+// If you edit this file you need to compile the theme. See README.md for details.
+
+// Global variable overrides. Must be declared before importing Valo.
+
+// Defines the plaintext font size, weight and family. Font size affects general component sizing.
+$v-font-size: 20px;
+//$v-font-weight: 300;
+$v-font-family: "Tahoma", sans-serif;
+
+// Defines the border used by all components.
+//$v-border: 1px solid (v-shade 0.7);
+//$v-border-radius: 4px;
+
+// Affects the color of some component elements, e.g Button, Panel title, etc
+//$v-background-color: hsl(210, 0%, 98%);
+// Affects the color of content areas, e.g  Panel and Window content, TextField input etc
+$v-app-background-color: hsl(255, 100%, 100%);
+
+// Affects the visual appearance of all components
+//$v-gradient: v-linear 8%;
+//$v-bevel-depth: 30%;
+//$v-shadow-opacity: 5%;
+
+// Defines colors for indicating status (focus, success, failure)
+//$v-focus-color: valo-focus-color(); // Calculates a suitable color automatically
+$v-focus-color: #BE1622;
+//$v-friendly-color: #2c9720;
+//$v-error-indicator-color: #ed473b;
+
+// For more information, see: https://vaadin.com/book/-/page/themes.valo.html
+// Example variants can be copy/pasted from https://vaadin.com/wiki/-/wiki/Main/Valo+Examples
+
+@import "../valo/valo.scss";
+
+@mixin teilautos {
+  @include valo;
+
+  // Teilautos theme rules here
+
+  .v-caption .v-captiontext {
+    color: #3C3C3B;
+  }
+
+  .v-slider {
+  }
+  .v-slider-base:before, .v-slider-base:after {
+  	background: #BE1622;
+  	border-style: none;
+  	box-shadow: none;
+  }
+  .v-slider-handle:before, .v-slider-handle:after {
+    background: transparent url(img/car-grey-32x18px.png);
+    width: 32px;
+    height: 18px;
+    border-style: none;
+    box-shadow: none;  
+  }
+ 
+  .v-caption-inline-label {
+    display: inline-block;
+  }
+
+  .v-textfield-kilometer {
+    color: #3C3C3B;
+    text-align: right;
+  }
+ 
+  .v-select {
+  }
+ 
+  .v-label {
+  	color: #3C3C3B;
+  }
+ 
+  .v-label-grid-header {
+  	color: #3C3C3B;
+  	font-size: 24px;
+  	font-weight: 600;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+  .v-label-grid-cell {
+  	color: #3C3C3B;
+  	font-size: 24px;
+  	font-weight: 300;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+   
+  .v-label-tariff {
+  	font-size: 24px;
+  	font-weight: 600;
+  	margin-right: 10px;
+  }
+  .v-label-recommendation {
+  	font-size: 24px;
+    font-weight: 900;
+ 	color: #BE1622;
+  }
+  .v-label-footer {
+  	font-size: 10px;
+  }
+ 
+  .v-gridlayout {
+    border: 1px solid #d3d3d3;
+  }
+
+}
